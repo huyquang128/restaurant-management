@@ -1,3 +1,89 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+/* banner swiper */
+.swiper-button-next {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    padding: 15px;
+    display: flex;
+    height: 50px !important;
+    width: 50px !important;
+}
+
+.swiper-button-prev {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+    padding: 15px;
+    height: 50px !important;
+    width: 50px !important;
+}
+
+.swiper-button-next:after {
+    display: none;
+}
+
+.swiper-button-prev:after {
+    display: none;
+}
+
+/* pagination */
+.my-swiper .swiper-pagination {
+    position: relative;
+    bottom: 0px;
+    margin-top: 40px;
+    text-align: center;
+}
+
+.my-swiper .swiper-pagination-bullet {
+    width: 10px;
+    height: 10px;
+    margin: 0 5px;
+    background: rgba(0, 0, 0, 0.6);
+    transition: all 0.3s ease;
+}
+
+.my-swiper .swiper-pagination-bullet-active {
+    width: 30px;
+    height: 10px;
+    border-radius: 10px;
+    background: #cfa670;
+}
+
+/*  */
+.dots-menu {
+    background-image: radial-gradient(
+        circle closest-side,
+        #b0b0b0 80%,
+        #ffffff 10%
+    );
+    background-size: 4px 2px;
+    background-position: center bottom;
+    background-repeat: repeat-x;
+    border: 0 none;
+    height: 1px;
+    left: 0;
+    margin: 0;
+    right: 0;
+    bottom: 6px;
+    z-index: 1;
+}
+
+.dots {
+    background-image: radial-gradient(
+        circle closest-side,
+        #9d9a9a 80%,
+        #000 10%
+    );
+    background-size: 4px 2px;
+    background-position: center bottom;
+    background-repeat: repeat-x;
+    border: 0 none;
+    height: 1px;
+    left: 0;
+    margin: 0;
+    right: 0;
+    bottom: 6px;
+    z-index: 1;
+}
