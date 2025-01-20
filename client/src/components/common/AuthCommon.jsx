@@ -6,8 +6,11 @@ import fb from '@/assets/icon/fb.svg';
 import InputCommon from '@/components/common/InputCommon';
 import { Link } from 'react-router';
 import { motion } from 'framer-motion';
+import { useSelector } from 'react-redux';
+import { ColorRing } from 'react-loader-spinner';
 
 function AuthCommon({ type, formik }) {
+    const authStore = useSelector((state) => state.auth);
     return (
         <div className="flex font-cabin max-sm:flex-wrap-reverse">
             <div
@@ -70,6 +73,7 @@ function AuthCommon({ type, formik }) {
 
                         <InputCommon
                             id="email"
+                            autoComplete="email"
                             label="Email"
                             type="text"
                             placeholder="Nhập Email"
@@ -77,6 +81,7 @@ function AuthCommon({ type, formik }) {
                         />
                         <InputCommon
                             id="password"
+                            autoComplete="password"
                             label="Mật khẩu"
                             type="password"
                             placeholder="Nhập mật khẩu"
@@ -93,7 +98,25 @@ function AuthCommon({ type, formik }) {
                             type="submit"
                             className="w-full bg-black text-white py-3 rounded-lg"
                         >
-                            {type === 'register' ? 'ĐĂNG KÝ' : ' ĐĂNG NHẬP'}
+                            {authStore.isLoading ? (
+                                <div className="flex justify-center">
+                                    <ColorRing
+                                        height="25"
+                                        width="80"
+                                        colors={[
+                                            '#e15b64',
+                                            '#f47e60',
+                                            '#f8b26a',
+                                            '#abbd81',
+                                            '#849b87',
+                                        ]}
+                                    />
+                                </div>
+                            ) : type === 'register' ? (
+                                'ĐĂNG KÝ'
+                            ) : (
+                                ' ĐĂNG NHẬP'
+                            )}
                         </button>
                     </motion.form>
                     <motion.div

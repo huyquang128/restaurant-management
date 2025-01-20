@@ -8,6 +8,9 @@ import useScrollHandling from '../hooks/useScrollHandling';
 import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import RightSideDrawModal from '../modals/RightSideDrawModal';
+import { useSelector } from 'react-redux';
+import banner_1 from '@/assets/image/banner_1.jpg';
+import TooltipCommon from '../common/TooltipCommon';
 
 const category = [
     { name: 'Trang chủ', link: '/' },
@@ -20,9 +23,15 @@ const category = [
 function Header() {
     const { scrollPosition } = useScrollHandling();
 
+    const authStore = useSelector((state) => state?.auth);
+    const userStore = useSelector((state) => state?.user);
+
     const [fixedPosition, setFixedPosition] = useState(false);
     const [indexActiveCategory, setIsActiveCategory] = useState(null);
     const [isOpenModalMenu, setIsOpenModalMenu] = useState(false);
+    const [isOpenTooltipUser, setIsOpenTooltipUser] = useState(false);
+    const [isCloseTooltipAnimation, setIsCloseTooltipAnimation] =
+        useState(false);
 
     useEffect(() => {
         setFixedPosition(scrollPosition > 80);
@@ -31,6 +40,18 @@ function Header() {
     //handle events
     const handleHover = (index) => {
         setIsActiveCategory(index);
+    };
+
+    const handleCloseTooltip = () => {
+        setIsCloseTooltipAnimation(true);
+        setTimeout(
+            () => {
+                setIsCloseTooltipAnimation(false);
+                setIsOpenTooltipUser(false);
+            },
+
+            200
+        );
     };
 
     return (
@@ -99,11 +120,44 @@ function Header() {
                             0
                         </div>
                     </div>
-                    <Link to="/login">
-                        <div className="max-md:hidden cursor-pointer hover:text-yellow-primary">
-                            Đăng nhập
-                        </div>
-                    </Link>
+
+                    {authStore?.isAuthenticated ? (
+                        <Link>
+                            <div
+                                onMouseEnter={() => setIsOpenTooltipUser(true)}
+                                onMouseLeave={handleCloseTooltip}
+                                className="relative cursor-pointer flex items-center gap-2 max-md:hidden"
+                            >
+                                <div
+                                    className="h-8 w-8 rounded-full bg-black flex justify-center items-center
+                                                overflow-hidden border"
+                                >
+                                    <img
+                                        src={banner_1}
+                                        alt=""
+                                        className="object-cover w-full h-full"
+                                    />
+                                </div>
+                                <div>{userStore?.user?.username}</div>
+                                {isOpenTooltipUser && (
+                                    <TooltipCommon
+                                        isOpenTooltip={isOpenTooltipUser}
+                                        setIsOpenTooltip={setIsOpenTooltipUser}
+                                        isCloseTooltipAnimation={
+                                            isCloseTooltipAnimation
+                                        }
+                                    />
+                                )}
+                            </div>
+                        </Link>
+                    ) : (
+                        <Link to="/login">
+                            <div className="max-md:hidden cursor-pointer hover:text-yellow-primary">
+                                Đăng nhập
+                            </div>
+                        </Link>
+                    )}
+
                     <div
                         onClick={() => setIsOpenModalMenu(true)}
                         className="md:hidden cursor-pointer"

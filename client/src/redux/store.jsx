@@ -1,5 +1,4 @@
-import { configureStore } from '@reduxjs/toolkit';
-import userReducer from './user/index';
+import { combineReducers, configureStore } from '@reduxjs/toolkit';
 import {
     persistStore,
     persistReducer,
@@ -12,18 +11,27 @@ import {
 } from 'redux-persist';
 import storage from 'redux-persist/lib/storage';
 
+import userReducer from './userSlice/index';
+import authReducer from './authSlice/index';
+
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['user'], // Chỉ lưu trữ state của user
+    blacklist: ['user'],
 };
 
 const rootReducer = {
-    user: persistReducer(persistConfig, userReducer),
+    auth: authReducer,
+    user: userReducer,
 };
 
+const persistedReducer = persistReducer(
+    persistConfig,
+    combineReducers(rootReducer)
+);
+
 const store = configureStore({
-    reducer: rootReducer,
+    reducer: persistedReducer,
     middleware: (getDefaultMiddleware) =>
         getDefaultMiddleware({
             serializableCheck: {
@@ -40,5 +48,9 @@ const store = configureStore({
 });
 
 const persistor = persistStore(store);
+export const getAccessToken = () => {
+    const state = store.getState();
+    return state?.auth?.accessToken;
+};
 
 export { store, persistor };

@@ -7,7 +7,7 @@ import {
     faChevronRight,
 } from '@fortawesome/free-solid-svg-icons';
 import { useDispatch, useSelector } from 'react-redux';
-import { setCurrentImgIndex } from '@/redux/user';
+import { setCurrentImgIndex } from '@/redux/userSlice';
 import { motion } from 'framer-motion';
 
 const imageCarousel = [

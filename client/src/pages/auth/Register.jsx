@@ -1,8 +1,15 @@
 import AuthCommon from '@/components/common/AuthCommon';
+import ToastMsg from '@/components/common/ToastMsg';
+import { register } from '@/redux/authSlice';
 import { useFormik } from 'formik';
+import { useDispatch, useSelector } from 'react-redux';
+import { useNavigate } from 'react-router';
 import * as Yup from 'yup';
 
 function Register() {
+    const dispatch = useDispatch();
+    const navigate = useNavigate();
+
     const formik = useFormik({
         initialValues: {
             username: '',
@@ -19,7 +26,19 @@ function Register() {
                 .required('Mật khẩu là bắt buộc'),
         }),
         onSubmit: async (values) => {
-            console.log(values);
+            dispatch(register(values))
+                .then((data) => {
+                    if (data.payload?.success) {
+                        ToastMsg({
+                            status: 'success',
+                            msg: data.payload?.message,
+                        });
+                        navigate('/login');
+                    }
+                })
+                .catch((error) => {
+                    console.error(error);
+                });
         },
     });
     return (
