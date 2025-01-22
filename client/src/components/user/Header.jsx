@@ -9,8 +9,8 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import RightSideDrawModal from '../modals/RightSideDrawModal';
 import { useSelector } from 'react-redux';
-import banner_1 from '@/assets/image/banner_1.jpg';
 import TooltipCommon from '../common/TooltipCommon';
+import AvatarCommon from '../common/AvatarCommon';
 
 const category = [
     { name: 'Trang chủ', link: '/' },
@@ -122,34 +122,13 @@ function Header() {
                     </div>
 
                     {authStore?.isAuthenticated ? (
-                        <Link>
-                            <div
-                                onMouseEnter={() => setIsOpenTooltipUser(true)}
-                                onMouseLeave={handleCloseTooltip}
-                                className="relative cursor-pointer flex items-center gap-2 max-md:hidden"
-                            >
-                                <div
-                                    className="h-8 w-8 rounded-full bg-black flex justify-center items-center
-                                                overflow-hidden border"
-                                >
-                                    <img
-                                        src={banner_1}
-                                        alt=""
-                                        className="object-cover w-full h-full"
-                                    />
-                                </div>
-                                <div>{userStore?.user?.username}</div>
-                                {isOpenTooltipUser && (
-                                    <TooltipCommon
-                                        isOpenTooltip={isOpenTooltipUser}
-                                        setIsOpenTooltip={setIsOpenTooltipUser}
-                                        isCloseTooltipAnimation={
-                                            isCloseTooltipAnimation
-                                        }
-                                    />
-                                )}
-                            </div>
-                        </Link>
+                        <AvatarCommon
+                            isOpenTooltipUser={isOpenTooltipUser}
+                            setIsOpenTooltipUser={setIsOpenTooltipUser}
+                            handleCloseTooltip={handleCloseTooltip}
+                            userStore={userStore}
+                            isCloseTooltipAnimation={isCloseTooltipAnimation}
+                        />
                     ) : (
                         <Link to="/login">
                             <div className="max-md:hidden cursor-pointer hover:text-yellow-primary">

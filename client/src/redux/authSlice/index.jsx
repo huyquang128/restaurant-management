@@ -96,6 +96,10 @@ const authSlice = createSlice({
             .addCase(refreshToken.rejected, (state) => {
                 state.isLoading = false;
                 state.isAuthenticated = false;
+            })
+            .addCase(logout.fulfilled, (state) => {
+                state.isLoading = false;
+                state.isAuthenticated = false;
             });
     },
 });

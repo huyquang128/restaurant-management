@@ -2,6 +2,20 @@
 @tailwind components;
 @tailwind utilities;
 
+@layer base {
+    :root {
+        --bg-primary: #f1f3f4;
+        --bg-secondary: #fff;
+        --bg-tertiary: #fff;
+    }
+
+    .dark {
+        --bg-primary: #0d0f11;
+        --bg-secondary: #191d23;
+        --bg-tertiary: #262c36;
+    }
+}
+
 /* banner swiper */
 .swiper-button-next {
     background: rgba(0, 0, 0, 0.4);
@@ -86,4 +100,9 @@
     right: 0;
     bottom: 6px;
     z-index: 1;
+}
+
+/* scroll bar */
+.no-scrollbar {
+    scrollbar-width: none;
 }

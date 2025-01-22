@@ -1,9 +1,9 @@
 import banner_1 from '@/assets/image/banner_1.jpg';
-import { useEffect, useRef, useState } from 'react';
-import { motion } from 'framer-motion';
+import { useRef, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import star_black from '@/assets/icon/star_black.svg';
 
 const listDishes = [
     { name: 'Món ăn a', price: 10000, img: banner_1 },
@@ -23,6 +23,7 @@ const arrMenuCategory = [
     { title: 'Món Khai vị' },
     { title: 'Món chính' },
 ];
+
 function Menu() {
     const ref = useRef(null);
     const location = useLocation();
@@ -107,6 +108,7 @@ function Menu() {
                         </div>
                         <div className="">Lọc món ăn</div>
                     </div>
+                    
                     {/* list dishes */}
                     <div
                         className="grid grid-cols-3 gap-x-6 gap-y-10 font-oswald
@@ -168,7 +170,8 @@ function Menu() {
                                 <h3 className="text-xl font-medium text-center mb-3">
                                     {item.name.toLocaleUpperCase()}
                                 </h3>
-                                <div className="dots-menu "></div>
+
+                                {/* price */}
                                 <div className="flex justify-center items-center gap-2 mt-3">
                                     <p className="text-gray-secondary text-center line-through decoration-1">
                                         {item.price.toLocaleString('vi-VN', {
@@ -182,6 +185,37 @@ function Menu() {
                                             currency: 'VND',
                                         })}
                                     </p>
+                                </div>
+
+                                {/* star */}
+                                <div className="flex gap-1 items-center ">
+                                    <img
+                                        src={star_black}
+                                        alt=""
+                                        className="h-4"
+                                    />
+                                    <img
+                                        src={star_black}
+                                        alt=""
+                                        className="h-4"
+                                    />
+                                    <img
+                                        src={star_black}
+                                        alt=""
+                                        className="h-4"
+                                    />
+                                    <img
+                                        src={star_black}
+                                        alt=""
+                                        className="h-4"
+                                    />
+                                    <img
+                                        src={star_black}
+                                        alt=""
+                                        className="h-4"
+                                    />
+
+                                    <span>4.9</span>
                                 </div>
                             </div>
                         ))}

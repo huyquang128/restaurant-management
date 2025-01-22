@@ -20,7 +20,7 @@ export const loginApi = async (formData) => {
 
 export const logoutApi = async () => {
     try {
-        const response = await axiosInstance.post('/auth/register');
+        const response = await axiosInstance.post('/auth/logout');
         return response.data;
     } catch (error) {
         throw new Error(error);

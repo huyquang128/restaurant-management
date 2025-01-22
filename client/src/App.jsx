@@ -8,6 +8,7 @@ import { jwtDecode } from 'jwt-decode';
 import { getUserById } from './redux/userSlice';
 import axiosInstance from './api/axiosInstance';
 import { store } from './redux/store';
+import AdminLayout from './components/admin/AdminLayout';
 
 function App() {
     const dispatch = useDispatch();
@@ -40,6 +41,8 @@ function App() {
 
                 if (route.layout === 'auth') {
                     LayoutCommon = <AuthLayout />;
+                } else if (route.layout === 'admin') {
+                    LayoutCommon = <AdminLayout />;
                 } else {
                     LayoutCommon = <HomeLayout />;
                 }

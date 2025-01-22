@@ -1,5 +1,7 @@
 /** @type {import('tailwindcss').Config} */
+
 export default {
+    darkMode: ['class'],
     content: ['./index.html', './src/**/*.{js,ts,jsx,tsx}'],
     theme: {
         screens: {
@@ -11,6 +13,11 @@ export default {
         },
         extend: {
             colors: {
+                // dark-light mode colors
+                'bg-primary': 'var(--bg-primary)',
+                'bg-secondary': 'var(--bg-secondary)',
+                'bg-tertiary': 'var(--bg-tertiary)',
+
                 'yellow-primary': '#cfa670',
 
                 'gray-primary': '#777777',

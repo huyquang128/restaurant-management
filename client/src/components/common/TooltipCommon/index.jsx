@@ -1,12 +1,14 @@
 import banner_1 from '@/assets/image/banner_1.jpg';
-import { useState } from 'react';
+import { logout } from '@/redux/authSlice';
 import { motion } from 'framer-motion';
+import { useDispatch } from 'react-redux';
 
 function TooltipCommon({
     isOpenTooltip,
     setIsOpenTooltip,
     isCloseTooltipAnimation,
 }) {
+    const dispatch = useDispatch();
     return (
         <motion.div
             initial={{ opacity: 0 }}
@@ -41,7 +43,10 @@ function TooltipCommon({
                     Đơn hàng
                 </div>
             </div>
-            <div className="py-2 hover:text-yellow-primary transition-colors ease-linear duration-300">
+            <div
+                onClick={() => dispatch(logout())}
+                className="py-2 hover:text-yellow-primary transition-colors ease-linear duration-300"
+            >
                 logout
             </div>
         </motion.div>

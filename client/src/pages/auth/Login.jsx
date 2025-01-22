@@ -42,13 +42,20 @@ function Login() {
                             token: data.payload.accessToken,
                             id: decodedToken._id,
                         };
-
                         dispatch(getUserById(formGetUser));
-                        ToastMsg({
-                            status: 'success',
-                            msg: data.payload?.message,
-                        });
-                        navigate('/');
+                        if (decodedToken.role === 'admin') {
+                            ToastMsg({
+                                status: 'success',
+                                msg: data.payload?.message,
+                            });
+                            navigate('/dashboard');
+                        } else {
+                            ToastMsg({
+                                status: 'success',
+                                msg: data.payload?.message,
+                            });
+                            navigate('/');
+                        }
                     }
                 })
                 .catch((error) => {
