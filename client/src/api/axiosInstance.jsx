@@ -3,7 +3,7 @@ import axios from 'axios';
 
 export const BASE_URL = 'http://localhost:3000/api/v1';
 
-export const axiosInstance = axios.create({
+export const axiosInstancePublic = axios.create({
     baseURL: BASE_URL,
     headers: {
         'Content-Type': 'application/json',
@@ -12,7 +12,7 @@ export const axiosInstance = axios.create({
 });
 
 // Tạo axios instance
-const axiosInstancePrivate = (store) => {
+const axiosInstancePrivate = (getState, dispatch) => {
     const axiosInstances = axios.create({
         baseURL: BASE_URL,
         withCredentials: true,
@@ -20,7 +20,7 @@ const axiosInstancePrivate = (store) => {
 
     axiosInstances.interceptors.request.use(
         (config) => {
-            const state = store?.getState();
+            const state = getState();
             const accessToken = state.auth.accessToken;
 
             if (accessToken) {
@@ -44,14 +44,15 @@ const axiosInstancePrivate = (store) => {
                 err.response.status === 403 &&
                 !originalRequest._retry
             ) {
+                //đánh dấu gọi api 1 lần
                 originalRequest._retry = true;
 
                 try {
                     // Gọi Redux dispatch để refresh token
-                    const result = await store.dispatch(refreshToken());
+                    const data = await dispatch(refreshToken());
 
                     // Lấy access token mới từ payload
-                    const newAccessToken = result.payload.accessToken;
+                    const newAccessToken = data.payload.accessToken;
 
                     // Cập nhật lại token vào headers của originalRequest
                     originalRequest.headers[

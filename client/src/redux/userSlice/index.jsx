@@ -1,4 +1,5 @@
-import { getUserByIdApi } from '@/api/userService';
+import axiosInstancePrivate from '@/api/axiosInstance';
+import userService from '@/api/userService';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 const initialState = {
@@ -9,15 +10,18 @@ const initialState = {
 
 export const getUserById = createAsyncThunk(
     '/user/get-user-by-id',
-    async (formData) => {
+    async (id, { rejectWithValue, getState, dispatch }) => {
         try {
-            const response = await getUserByIdApi(formData);
+            const api = userService(axiosInstancePrivate(getState, dispatch));
+            const response = await api.getUserByIdApi(id);
             return response;
         } catch (error) {
-            throw new Error(error.message);
+            return rejectWithValue(error);
         }
     }
 );
+
+
 
 const userSlice = createSlice({
     name: 'user',

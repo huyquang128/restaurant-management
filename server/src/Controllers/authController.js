@@ -1,8 +1,25 @@
 const User = require('../Models/userModel');
 const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const redis = require('../Helper/redisClient');
 
-let refreshTokens = [];
+const saveRefreshToken = async (userId, refreshToken) => {
+    await redis.set(
+        `refreshToken:${userId}`,
+        refreshToken,
+        'EX',
+        365 * 24 * 60 * 60
+    );
+};
+
+const verifyRefreshToken = async (userId, refreshToken) => {
+    const storeToken = await redis.get(`refreshToken:${userId}`);
+    return storeToken === refreshToken;
+};
+
+const removeRefreshToken = async (userId) => {
+    await redis.del(`refreshToken:${userId}`);
+};
 
 const register = async (req, res) => {
     const { username, email, password } = req.body;
@@ -83,7 +100,9 @@ const login = async (req, res) => {
 
         const accessToken = generateAccessTokenJwt(user);
         const refreshToken = generateRefreshTokenJWT(user);
-        refreshTokens.push(refreshToken);
+
+        //save refresh token to redis-cloud
+        await saveRefreshToken(user._id, refreshToken);
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
@@ -113,10 +132,12 @@ const refreshTokenJWT = async (req, res) => {
     if (!refreshToken)
         return res.status(401).json({ message: 'Bạn chưa đăng nhập' });
 
-    if (!refreshTokens.includes(refreshToken))
-        return res.status(401).json({ message: 'Token không phải của bạn' });
+    //verify the refresh token in redis-cloud
+    const userId = jwt.decode(refreshToken)._id;
+    const isValid = await verifyRefreshToken(userId, refreshToken);
 
-    refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+    if (!isValid)
+        return res.status(401).json({ message: 'Token không phải của bạn' });
 
     jwt.verify(refreshToken, process.env.JWT_REFRESH_KEY, (err, user) => {
         if (err)
@@ -127,7 +148,8 @@ const refreshTokenJWT = async (req, res) => {
         const newAccessToken = generateAccessTokenJwt(user);
         const newRefreshToken = generateRefreshTokenJWT(user);
 
-        refreshTokens.push(newRefreshToken);
+        //update new refresh token
+        saveRefreshToken(userId, newRefreshToken);
 
         res.cookie('refreshToken', newRefreshToken, {
             httpOnly: true,
@@ -135,7 +157,7 @@ const refreshTokenJWT = async (req, res) => {
             sameSite: 'Strict',
         });
 
-        res.json({
+        return res.json({
             success: true,
             message: 'Phiên đăng nhập mới đã tạo thành công!!!',
             accessToken: newAccessToken,
@@ -143,9 +165,13 @@ const refreshTokenJWT = async (req, res) => {
     });
 };
 
-const logout = (req, res) => {
+const logout = async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
-    refreshTokens = refreshTokens.filter((token) => token !== refreshToken);
+    const userId = jwt.decode(refreshToken)._id;
+
+    //remove refresh token from redis-cloud
+    await removeRefreshToken(userId);
+
     res.clearCookie('refreshToken');
     res.json({ success: true, message: 'Đăng xuất thành công!!!' });
 };

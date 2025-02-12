@@ -1,14 +1,15 @@
+const userService = (axiosPrivate) => ({
+    getUserByIdApi: async (id) => {
+        try {
+            const response = await axiosPrivate.get(
+                `/user/get-user-by-id/${id}`
+            );
 
+            return response.data;
+        } catch (error) {
+            console.error(error);
+        }
+    },
+});
 
-
-export const getUserByIdApi = async (formData) => {
-    try {
-        const response = await formData.result.get(
-            `/user/get-user-by-id/${formData.id}`
-        );
-
-        return response.data;
-    } catch (error) {
-        throw new Error(error);
-    }
-};
+export default userService;

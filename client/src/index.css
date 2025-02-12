@@ -6,13 +6,17 @@
     :root {
         --bg-primary: #f1f3f4;
         --bg-secondary: #fff;
-        --bg-tertiary: #fff;
+        --bg-tertiary: #f1f3f4;
+        --text-primary: #191d23;
+        --color-active: #ffedd5;
     }
 
     .dark {
         --bg-primary: #0d0f11;
         --bg-secondary: #191d23;
         --bg-tertiary: #262c36;
+        --text-primary: #fff;
+        --color-active: #4b5563;
     }
 }
 
@@ -106,3 +110,5 @@
 .no-scrollbar {
     scrollbar-width: none;
 }
+
+/* custom toast */

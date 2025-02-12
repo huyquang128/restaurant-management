@@ -11,6 +11,7 @@ const initialState = {
     isLoading: false,
     isAuthenticated: false,
     accessToken: null,
+    theme: 'light',
 };
 
 export const register = createAsyncThunk('/auth/register', async (formData) => {
@@ -59,6 +60,9 @@ const authSlice = createSlice({
         setRefreshToken: (state, action) => {
             state.accessToken = action.payload;
         },
+        setTheme: (state, action) => {
+            state.theme = action.payload;
+        },
     },
     extraReducers: (builder) => {
         builder
@@ -105,4 +109,4 @@ const authSlice = createSlice({
 });
 
 export default authSlice.reducer;
-export const { setRefreshToken } = authSlice.actions;
+export const { setRefreshToken, setTheme } = authSlice.actions;

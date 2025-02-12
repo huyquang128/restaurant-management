@@ -38,17 +38,14 @@ function Login() {
                             data.payload.accessToken
                         );
 
-                        const formGetUser = {
-                            token: data.payload.accessToken,
-                            id: decodedToken._id,
-                        };
-                        dispatch(getUserById(formGetUser));
+                        const id = decodedToken._id;
+                        dispatch(getUserById(id));
                         if (decodedToken.role === 'admin') {
                             ToastMsg({
                                 status: 'success',
                                 msg: data.payload?.message,
                             });
-                            navigate('/dashboard');
+                            navigate('/admin/dashboard');
                         } else {
                             ToastMsg({
                                 status: 'success',

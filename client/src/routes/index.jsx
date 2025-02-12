@@ -1,3 +1,4 @@
+import AddProductItem from '@/pages/admin/AddProductItem';
 import Dashboard from '@/pages/admin/Dashboard';
 import ProductsAdmin from '@/pages/admin/ProductsAdmin';
 import Login from '@/pages/auth/Login';
@@ -12,8 +13,22 @@ const routerPublic = [
     { path: '/thực-đơn/:productName', components: <ProductDetail /> },
     { path: '/login', components: <Login />, layout: 'auth' },
     { path: '/register', components: <Register />, layout: 'auth' },
-    { path: '/dashboard', components: <Dashboard />, layout: 'admin' },
-    { path: '/product-items', components: <ProductsAdmin />, layout: 'admin' },
+    { path: '/admin/dashboard', components: <Dashboard />, layout: 'admin' },
+    {
+        path: '/admin/product-items',
+        components: <ProductsAdmin />,
+        layout: 'admin',
+    },
+    {
+        path: '/admin/product-items/add-product',
+        components: <AddProductItem />,
+        layout: 'admin',
+    },
+    {
+        path: '/admin/product-items/:slug',
+        components: <AddProductItem />,
+        layout: 'admin',
+    },
 ];
 
 export { routerPublic };

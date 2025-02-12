@@ -9,6 +9,8 @@ import { getUserById } from './redux/userSlice';
 import axiosInstance from './api/axiosInstance';
 import { store } from './redux/store';
 import AdminLayout from './components/admin/AdminLayout';
+import { setTheme } from './redux/authSlice';
+import useTheme from './components/hooks/useTheme';
 
 function App() {
     const dispatch = useDispatch();
@@ -17,19 +19,15 @@ function App() {
     const authStore = useSelector((state) => state.auth);
     const token = useSelector((state) => state?.auth?.accessToken);
 
+    //theme change
+    useTheme(authStore.theme);
+
     useEffect(() => {
         if (authStore?.isAuthenticated) {
             decode = jwtDecode(token);
-
-            const result = axiosInstance(store);
-
             if (token) {
-                const formData = {
-                    id: decode._id,
-                    result,
-                };
-
-                dispatch(getUserById(formData));
+                const id = decode._id;
+                dispatch(getUserById(id));
             }
         }
     }, [decode?._id, token]);

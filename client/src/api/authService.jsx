@@ -1,8 +1,12 @@
-import { axiosInstance } from './axiosInstance';
+import { axiosInstancePublic } from './axiosInstance';
 
+// api public (don't verify token)
 export const registerApi = async (formData) => {
     try {
-        const response = await axiosInstance.post('/auth/register', formData);
+        const response = await axiosInstancePublic.post(
+            '/auth/register',
+            formData
+        );
         return response.data;
     } catch (error) {
         throw new Error(error);
@@ -11,7 +15,10 @@ export const registerApi = async (formData) => {
 
 export const loginApi = async (formData) => {
     try {
-        const response = await axiosInstance.post('/auth/login', formData);
+        const response = await axiosInstancePublic.post(
+            '/auth/login',
+            formData
+        );
         return response.data;
     } catch (error) {
         throw new Error(error);
@@ -20,7 +27,7 @@ export const loginApi = async (formData) => {
 
 export const logoutApi = async () => {
     try {
-        const response = await axiosInstance.post('/auth/logout');
+        const response = await axiosInstancePublic.post('/auth/logout');
         return response.data;
     } catch (error) {
         throw new Error(error);
@@ -29,7 +36,7 @@ export const logoutApi = async () => {
 
 export const refreshTokenApi = async () => {
     try {
-        const response = await axiosInstance.post('/auth/refresh-token');
+        const response = await axiosInstancePublic.post('/auth/refresh-token');
         return response.data;
     } catch (error) {
         throw new Error(error);

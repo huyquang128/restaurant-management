@@ -11,13 +11,9 @@ function InputCommon({ label, type, isRequired = false, ...props }) {
     const errMsg = formik.errors[id];
 
     return (
-        <div>
-            <div className="">{label}</div>
-            <div
-                className={`transition-all ease-linear duration-300 border  py-3 rounded-sm px-4 relative ${
-                    isErr ? 'border-red-500' : 'border-gray-100'
-                } bg-gray-100 rounded-md`}
-            >
+        <div  className="">
+            <div className="mb-2 text-text-primary">{label}</div>
+            <div className={`transition-all`}>
                 <input
                     type={
                         type === 'password'
@@ -26,7 +22,10 @@ function InputCommon({ label, type, isRequired = false, ...props }) {
                                 : 'password'
                             : type
                     }
-                    className={`outline-none bg-gray-100`}
+                    className={`w-full px-4 py-3 bg-bg-tertiary outline-1 outline focus:outline-yellow-primary
+                        text-text-primary rounded-lg ease-linear duration-200 
+                     relative
+                        ${isErr ? 'outline-red-500' : 'outline-transparent'}`}
                     {...props}
                     onBlur={formik.handleBlur}
                     onChange={formik.handleChange}

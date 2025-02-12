@@ -13,16 +13,22 @@ import storage from 'redux-persist/lib/storage';
 
 import userReducer from './userSlice/index';
 import authReducer from './authSlice/index';
+import categoryDishesReducer from './categoryDishesSlice';
+import unitReducer from './unitSlice';
+import productReducer from './productSlice';
 
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['user'],
+    blacklist: ['user', 'unit', 'product'],
 };
 
 const rootReducer = {
     auth: authReducer,
     user: userReducer,
+    categoryDishes: categoryDishesReducer,
+    unit: unitReducer,
+    product: productReducer,
 };
 
 const persistedReducer = persistReducer(
@@ -48,9 +54,5 @@ const store = configureStore({
 });
 
 const persistor = persistStore(store);
-export const getAccessToken = () => {
-    const state = store.getState();
-    return state?.auth?.accessToken;
-};
 
 export { store, persistor };

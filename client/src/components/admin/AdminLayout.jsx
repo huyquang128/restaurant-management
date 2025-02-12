@@ -4,11 +4,11 @@ import SidebarAdmin from './SidebarAdmin';
 
 function AdminLayout() {
     return (
-        <div className="flex bg-bg-primary">
+        <div className="bg-bg-primary transition-colors ease-linear duration-300">
             <SidebarAdmin />
-            <div className="flex-1">
+            <div className="flex-1 ml-56 max-md:ml-0 pb-5">
                 <HeaderAdmin />
-                <div className="p-5 bg-bg-secondary rounded-lg m-4 h-full">
+                <div className="p-5 bg-bg-secondary rounded-lg m-4 min-h-screen">
                     <Outlet />
                 </div>
             </div>
