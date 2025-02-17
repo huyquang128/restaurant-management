@@ -1,18 +1,21 @@
 import axiosInstancePrivate from '@/api/axiosInstance';
 import productServicePrivate, {
     getAllProductsApi,
+    getAllProductsPageApi,
     getProductBySlugApi,
     getProductsPageByCategoryApi,
+    searchNameProductApi,
+    searchNameProductNoPageApi,
 } from '@/api/productService';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
 
 const initialState = {
     isLoading: false,
+    isLoadingSearch: false,
     error: null,
     products: null,
     formProductValue: {
         nameProduct: '',
-        categoryDishes: '',
         unit: '',
         quantity: '',
         note: '',
@@ -24,14 +27,28 @@ const initialState = {
     currentProductId: null,
     urlImgProducts: [],
     arrImgSelected: [],
-    arrFileImgUpload: [],
+    arrImgRemoveTemp: [],
+    productsSearch: [],
+    productSelectedInCategoryAdd: [],
 };
+
+export const getAllProductPages = createAsyncThunk(
+    '/product/get-all-products-pages',
+    async (pageNumber) => {
+        try {
+            const response = await getAllProductsPageApi(pageNumber);
+            return response;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+);
 
 export const getAllProducts = createAsyncThunk(
     '/product/get-all-products',
-    async (pageNumber) => {
+    async () => {
         try {
-            const response = await getAllProductsApi(pageNumber);
+            const response = await getAllProductsApi();
             return response;
         } catch (error) {
             console.error(error);
@@ -108,6 +125,33 @@ export const deleteProduct = createAsyncThunk(
     }
 );
 
+export const searchProductName = createAsyncThunk(
+    '/product/search-product-name',
+    async ({ page, q }) => {
+        try {
+            const response = await searchNameProductApi({
+                page,
+                q,
+            });
+            return response;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+);
+
+export const searchProductNameNoPage = createAsyncThunk(
+    '/product/search-product-name-no-pages',
+    async (q) => {
+        try {
+            const response = await searchNameProductNoPageApi(q);
+            return response;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+);
+
 const productSlice = createSlice({
     name: 'product',
     initialState,
@@ -130,7 +174,6 @@ const productSlice = createSlice({
                 ? state.arrImgSelected.filter((img) => img !== action.payload)
                 : [action.payload, ...state.arrImgSelected];
         },
-
         resetUrlImgProduct: (state) => {
             state.urlImgProducts = [];
         },
@@ -138,6 +181,15 @@ const productSlice = createSlice({
             state.urlImgProducts = state.urlImgProducts.filter(
                 (img, index) => index !== action.payload
             );
+        },
+        setProductSelectedInCategory: (state, action) => {
+            state.productSelectedInCategoryAdd = action.payload;
+        },
+        deleteProductSelectedInCategory: (state, action) => {
+            state.productSelectedInCategoryAdd =
+                state.productSelectedInCategoryAdd.filter(
+                    (item) => item._id !== action.payload
+                );
         },
     },
     extraReducers: (builder) => {
@@ -156,7 +208,22 @@ const productSlice = createSlice({
                 state.error = action.payload;
             })
 
-            //getProductsPageByCategory
+            //get product pages
+            .addCase(getAllProductPages.pending, (state) => {
+                state.isLoading = true;
+                state.error = null;
+            })
+            .addCase(getAllProductPages.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.products = action.payload;
+                state.error = null;
+            })
+            .addCase(getAllProductPages.rejected, (state, action) => {
+                state.isLoading = false;
+                state.error = action.payload;
+            })
+
+            //get Products Page By Category
             .addCase(getProductsPageByCategory.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
@@ -171,7 +238,7 @@ const productSlice = createSlice({
                 state.error = action.payload;
             })
 
-            //getProductBySlug
+            //get Product By Slug
             .addCase(getProductBySlug.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
@@ -180,7 +247,6 @@ const productSlice = createSlice({
                 state.isLoading = false;
                 state.formProductValue = {
                     nameProduct: action.payload?.data?.name,
-                    categoryDishes: action.payload?.data?.categoryDishes._id,
                     unit: action.payload?.data?.unit._id,
                     quantity: action.payload?.data?.quantity,
                     note: action.payload?.data?.note,
@@ -200,7 +266,7 @@ const productSlice = createSlice({
                 state.error = action.payload;
             })
 
-            //addProduct
+            //add Product
             .addCase(addProduct.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
@@ -214,7 +280,7 @@ const productSlice = createSlice({
                 state.error = action.payload;
             })
 
-            //updateProduct
+            //update Product
             .addCase(updateProduct.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
@@ -228,7 +294,7 @@ const productSlice = createSlice({
                 state.error = action.payload;
             })
 
-            //deleteProduct
+            //delete Product
             .addCase(deleteProduct.pending, (state) => {
                 state.isLoading = true;
                 state.error = null;
@@ -239,6 +305,36 @@ const productSlice = createSlice({
             })
             .addCase(deleteProduct.rejected, (state, action) => {
                 state.isLoading = false;
+                state.error = action.payload;
+            })
+
+            //search products name
+            .addCase(searchProductName.pending, (state) => {
+                state.isLoadingSearch = true;
+                state.error = null;
+            })
+            .addCase(searchProductName.fulfilled, (state, action) => {
+                state.isLoadingSearch = false;
+                state.productsSearch = action.payload;
+                state.error = null;
+            })
+            .addCase(searchProductName.rejected, (state, action) => {
+                state.isLoadingSearch = false;
+                state.error = action.payload;
+            })
+
+            //search products name no page
+            .addCase(searchProductNameNoPage.pending, (state) => {
+                state.isLoadingSearch = true;
+                state.error = null;
+            })
+            .addCase(searchProductNameNoPage.fulfilled, (state, action) => {
+                state.isLoadingSearch = false;
+                state.productsSearch = action.payload;
+                state.error = null;
+            })
+            .addCase(searchProductNameNoPage.rejected, (state, action) => {
+                state.isLoadingSearch = false;
                 state.error = action.payload;
             });
     },
@@ -251,5 +347,7 @@ export const {
     handleDeleteImage,
     deleteImgProduct,
     setImgSelected,
+    setProductSelectedInCategory,
+    deleteProductSelectedInCategory,
 } = productSlice.actions;
 export default productSlice.reducer;

@@ -8,6 +8,8 @@ import { Link } from 'react-router';
 import { motion } from 'framer-motion';
 import { useSelector } from 'react-redux';
 import { ColorRing } from 'react-loader-spinner';
+import Button from './Button/Button';
+import ColorRingAnimation from './spinnerAnimation/ColorRingAnimation';
 
 function AuthCommon({ type, formik }) {
     const authStore = useSelector((state) => state.auth);
@@ -94,7 +96,7 @@ function AuthCommon({ type, formik }) {
                             Quên mật khẩu?
                         </div>
 
-                        <button
+                        {/* <button
                             type="submit"
                             className="w-full bg-black text-white py-3 rounded-lg"
                         >
@@ -117,7 +119,16 @@ function AuthCommon({ type, formik }) {
                             ) : (
                                 ' ĐĂNG NHẬP'
                             )}
-                        </button>
+                        </button> */}
+                        <Button
+                            title={
+                                type === 'register' ? 'ĐĂNG KÝ' : ' ĐĂNG NHẬP'
+                            }
+                            bg="save"
+                            color_ring={
+                                authStore.isLoading && ColorRingAnimation
+                            }
+                        />
                     </motion.form>
                     <motion.div
                         initial={{ opacity: 0, y: '100%' }}

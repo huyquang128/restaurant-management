@@ -4,6 +4,8 @@ const {
     removeFromCloudinary,
 } = require('../Helper/cloudinary');
 const Product = require('../Models/productModel');
+const redisClient = require('../Helper/redisClient');
+const removeAccents = require('remove-accents');
 
 const getProductsPageByCategory = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
@@ -37,7 +39,7 @@ const getProductsPageByCategory = async (req, res) => {
     }
 };
 
-const getAllProduct = async (req, res) => {
+const getAllProductPage = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const pageSize = 8;
 
@@ -67,6 +69,22 @@ const getAllProduct = async (req, res) => {
         return res.status(500).json({
             success: false,
             message: 'An error occurred while getting all products',
+        });
+    }
+};
+
+const getAllProducts = async (req, res) => {
+    try {
+        const products = await Product.find().populate('unit', 'name');
+
+        return res.json({
+            success: true,
+            data: products,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'An error occurred while getting all',
         });
     }
 };
@@ -107,7 +125,6 @@ const addProduct = async (req, res) => {
         description,
         quantity,
         unit,
-        categoryDishes,
         note,
     } = req.body;
 
@@ -138,6 +155,7 @@ const addProduct = async (req, res) => {
 
         const newProduct = new Product({
             name,
+            name_no_accents: removeAccents(name),
             cost: Number(cost),
             promotion: Number(promotion),
             selling: Number(selling),
@@ -145,7 +163,6 @@ const addProduct = async (req, res) => {
             quantity: Number(quantity),
             unit,
             note,
-            categoryDishes,
             images: formatImg,
         });
 
@@ -153,13 +170,16 @@ const addProduct = async (req, res) => {
         res.json({
             success: true,
             message: 'Thêm sản phẩm thành công!!!',
+            data: newProduct,
         });
     } catch (error) {
         console.log(error);
-        res.status(500).json({
-            success: false,
-            message: 'An error occurred while add products',
-        });
+        if (!res.headersSent) {
+            res.status(500).json({
+                success: false,
+                message: 'An error occurred while add products',
+            });
+        }
     }
 };
 
@@ -173,7 +193,6 @@ const updateProduct = async (req, res) => {
         description,
         quantity,
         unit,
-        categoryDishes,
         note,
         images,
     } = req.body;
@@ -192,34 +211,50 @@ const updateProduct = async (req, res) => {
             });
         }
         const jsonParser = JSON.parse(images);
-        const imagesArr = Array.isArray(jsonParser) ? jsonParser : [jsonParser];
-        const imagesFile = Array.isArray(imgFile) ? imgFile : [imgFile];
 
-        //remove img old cloud
-        const filterImg = isProductExisted.images.filter(
-            (img) => !imagesArr.some((item) => item.imageId !== img.imageId)
+        const imagesArrOld = Array.isArray(jsonParser)
+            ? jsonParser
+            : [jsonParser];
+
+        // convert objectId
+        const objectIdImgOld = imagesArrOld.map(
+            (img) => new mongoose.Types.ObjectId(img._id)
         );
-        if (filterImg.length <= 0)
-            res.status(404).json({
-                success: false,
-                message: 'không tìm thấy ảnh nào để xóa',
+
+        const imagesFileNew = Array.isArray(imgFile) ? imgFile : [imgFile];
+
+        let filterImgOld = [];
+
+        if (imagesArrOld.length > 0) {
+            //remove img old cloud
+            filterImgOld = isProductExisted.images.filter(
+                (img) =>
+                    !objectIdImgOld.some((item) => item._id.equals(img._id))
+            );
+
+            if (filterImgOld.length <= 0)
+                res.status(404).json({
+                    success: false,
+                    message: 'không tìm thấy ảnh nào để xóa',
+                });
+
+            const filterImgId = filterImgOld.map((img) =>
+                removeFromCloudinary(img.imageId)
+            );
+            const results = await Promise.allSettled(filterImgId);
+            
+            results.forEach((result) => {
+                if (result.value.result === 'not found') {
+                    return res.status(401).json({
+                        success: false,
+                        message: 'Xóa ảnh thất bại',
+                    });
+                }
             });
-
-        const filterImgId = filterImg.map((img) =>
-            removeFromCloudinary(img.imageId)
-        );
-        const results = await Promise.allSettled(filterImgId);
-
-        results.forEach((result, index) => {
-            if (result.value.result === 'not found') {
-                return res
-                    .status(401)
-                    .json({ success: false, message: 'Xóa ảnh thất bại' });
-            }
-        });
+        }
 
         //upload new img cloud
-        const uploadCloud = imagesFile.map((img) => uploadToCloudinary(img));
+        const uploadCloud = imagesFileNew.map((img) => uploadToCloudinary(img));
         const resultUpload = await Promise.all(uploadCloud);
 
         const formatImg = resultUpload.map((item) => ({
@@ -234,6 +269,7 @@ const updateProduct = async (req, res) => {
             },
             {
                 name,
+                name_no_accents: removeAccents(name),
                 cost: Number(cost),
                 promotion: Number(promotion),
                 selling: Number(selling),
@@ -242,21 +278,22 @@ const updateProduct = async (req, res) => {
                 unit,
                 note,
                 categoryDishes,
-                images: [...filterImg, ...formatImg],
+                images: [...imagesArrOld, ...formatImg],
             },
             {
                 new: true,
             }
         );
-
-        return res.json({
-            success: true,
-            message: 'Cập nhật sản phẩm thành công!!!',
-            data: updateProduct,
-        });
+        if (!res.headersSent) {
+            return res.json({
+                success: true,
+                message: 'Cập nhật sản phẩm thành công!!!',
+                data: updateProduct,
+            });
+        }
     } catch (error) {
         console.log(error);
-        if (!res.headerSent) {
+        if (!res.headersSent) {
             return res.status(500).json({
                 success: false,
                 message: 'An error occurred while add products',
@@ -267,8 +304,13 @@ const updateProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
     const { ids } = req.body;
+    const { q, page = 1 } = req.query;
     try {
         const productArray = Array.isArray(ids) ? ids : [ids];
+
+        //kiểm tra trong redis trước
+        const redisKey = `search:${q}:page:${page}`;
+        await redisClient.del(redisKey);
 
         // Xử lý xóa sản phẩm
         const result = await Product.deleteMany({ _id: { $in: productArray } });
@@ -292,11 +334,134 @@ const deleteProduct = async (req, res) => {
     }
 };
 
+const searchProduct = async (req, res) => {
+    const { q, page = 1 } = req.query;
+    if (!q) return res.json([]);
+
+    try {
+        //loại bỏ dấu
+        const q_no_accent = removeAccents(q);
+
+        //kiểm tra trong redis trước
+        const redisKey = `search:${q_no_accent}:page:${page}`;
+        const redisResult = await redisClient.get(redisKey);
+
+        if (redisResult) {
+            return res.json(JSON.parse(redisResult));
+        }
+
+        const pageNumber = parseInt(page, 10);
+        const limitNumber = 8;
+        const skip = (pageNumber - 1) * limitNumber;
+
+        //nếu không có trong redis tìm trong mongodb
+        const results = await Product.find(
+            {
+                $or: [
+                    { name: { $regex: q, $options: 'i' } },
+                    {
+                        name_no_accents: {
+                            $regex: q_no_accent,
+                            $options: 'i',
+                        },
+                    },
+                ],
+            },
+            { name: 1, slug: 1, _id: 1, images: 1, selling: 1, promotion: 1 }
+        )
+            .populate('categoryDishes', 'name')
+            .populate('unit', 'name')
+            .skip(skip)
+            .limit(limitNumber);
+
+        //đếm tổng số sản phẩm phù hợp
+        const totalProducts = await Product.countDocuments({
+            $or: [
+                { name: { $regex: q, $options: 'i' } },
+                {
+                    name_no_accents: {
+                        $regex: q_no_accent,
+                        $options: 'i',
+                    },
+                },
+            ],
+        });
+
+        const totalPages = Math.ceil(totalProducts / limitNumber);
+
+        const response = {
+            data: results,
+            totalProducts,
+            totalPages,
+            currentPage: pageNumber,
+            pageSize: limitNumber,
+        };
+
+        //lưu kết quả vào redis lần sau dùng
+        await redisClient.set(
+            redisKey,
+            JSON.stringify(response),
+            'EX',
+            60 * 10
+        );
+
+        res.json(response);
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while searching products',
+        });
+    }
+};
+
+const searchAllProductNoPage = async (req, res) => {
+    const { q } = req.query;
+    try {
+        const q_no_accent = removeAccents(q);
+
+        //kiểm tra trong redis trước
+        const redisKey = `searchAllProduct:${q_no_accent}`;
+        const redisResult = await redisClient.get(redisKey);
+
+        if (redisResult) {
+            return res.json(JSON.parse(redisResult));
+        }
+
+        //lấy trong csdl
+        const results = await Product.find(
+            {
+                $or: [
+                    { name: { $regex: q, $options: 'i' } },
+                    {
+                        name_no_accents: { $regex: q_no_accent, $options: 'i' },
+                    },
+                ],
+            },
+            { name: 1, slug: 1, _id: 1, images: 1, selling: 1 }
+        ).populate('unit', 'name');
+
+        //lưu kết quả vào redis lần sau dùng
+        await redisClient.set(redisKey, JSON.stringify(results), 'EX', 60 * 10);
+
+        res.json({ data: results });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while searching products',
+        });
+    }
+};
+
 module.exports = {
     getProductsPageByCategory,
-    getAllProduct,
+    getAllProductPage,
     addProduct,
     deleteProduct,
     getProductByNameSlug,
     updateProduct,
+    searchProduct,
+    getAllProducts,
+    searchAllProductNoPage,
 };

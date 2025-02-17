@@ -9,6 +9,7 @@
         --bg-tertiary: #f1f3f4;
         --text-primary: #191d23;
         --color-active: #ffedd5;
+        --border-primary:#eae7e7;
     }
 
     .dark {
@@ -17,6 +18,7 @@
         --bg-tertiary: #262c36;
         --text-primary: #fff;
         --color-active: #4b5563;
+        --border-primary: #34373b;
     }
 }
 

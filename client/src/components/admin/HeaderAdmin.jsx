@@ -18,23 +18,38 @@ import TooltipCommon from '../common/TooltipCommon';
 import ThemeMode from '../tooltipsContent/ThemeMode';
 import SidebarAdminModal from '../modals/SidebarAdminModal';
 import { categorySidebar } from '../common/categorySidebar';
+import SearchCommon from '../common/SearchCommon';
+import SearchModal from '../modals/SearchModal';
 
 function HeaderAdmin() {
     const userStore = useSelector((state) => state?.user);
     const authStore = useSelector((state) => state?.auth);
+    const productStore = useSelector((state) => state.product);
 
     const [isOpenTooltipUser, setIsOpenTooltipUser] = useState(false);
-    const [isOpenTooltipThemeMode, setIsOpenTooltipThemeMode] = useState(false);
     const [isCloseTooltipAnimation, setIsCloseTooltipAnimation] =
         useState(false);
+
+    //state tooltip theme
+    const [isOpenTooltipThemeMode, setIsOpenTooltipThemeMode] = useState(false);
     const [
         isCloseTooltipAnimationThemeMode,
         setIsCloseTooltipAnimationThemeMode,
     ] = useState(false);
+
+    //state modal sider bar
     const [isOpenSidebarModal, setIsOpenSidebarModal] = useState(false);
     const [isCloseModalSidebarAnimation, setIsCloseModalSidebarAnimation] =
         useState(false);
 
+    //state modal search
+    const [isOpenSearchModal, setIsOpenSearchModal] = useState(false);
+    const [isCloseSearchModalAnimation, setIsCloseSearchModalAnimation] =
+        useState(false);
+    const [charSearch, setCharSearch] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
+
+    //handle events
     const handleCloseTooltipUser = () => {
         setIsCloseTooltipAnimation(true);
         setTimeout(() => {
@@ -56,6 +71,14 @@ function HeaderAdmin() {
         setTimeout(() => {
             setIsCloseModalSidebarAnimation(false);
             setIsOpenSidebarModal(false);
+        }, 300);
+    };
+
+    const closeModalSearch = () => {
+        setIsCloseSearchModalAnimation(true);
+        setTimeout(() => {
+            setIsCloseSearchModalAnimation(false);
+            setIsOpenSearchModal(false);
         }, 300);
     };
 
@@ -82,21 +105,11 @@ function HeaderAdmin() {
                         className="h-7 "
                     />
                 </div>
-                <div className="border border-bg-tertiary flex items-center rounded-lg overflow-hidden p-1 bg-bg-tertiary max-xs:hidden">
-                    <img
-                        src={
-                            authStore.theme === 'light'
-                                ? search_black
-                                : search_white
-                        }
-                        alt=""
-                        className="h-7 "
-                    />
-                    <input
-                        type="text"
-                        placeholder="Tìm kiếm..."
-                        className="px-2 outline-none border-none bg-bg-tertiary"
-                    />
+                <div
+                    onClick={() => setIsOpenSearchModal(true)}
+                    className="max-xs:hidden"
+                >
+                    <SearchCommon />
                 </div>
             </div>
             <div className="flex gap-3 items-center">
@@ -159,6 +172,19 @@ function HeaderAdmin() {
                     isCloseModalAnimation={isCloseModalSidebarAnimation}
                     closeModal={closeModalSidebar}
                     arr={categorySidebar}
+                />
+            )}
+            
+            {isOpenSearchModal && (
+                <SearchModal
+                    isOpenModal={isOpenSearchModal}
+                    closeModal={closeModalSearch}
+                    isCloseModalAnimation={isCloseSearchModalAnimation}
+                    arr={productStore.productsSearch?.data}
+                    isLoading={productStore.isLoadingSearch}
+                    charSearch={charSearch}
+                    setCharSearch={setCharSearch}
+                    currentPage={currentPage}
                 />
             )}
         </div>

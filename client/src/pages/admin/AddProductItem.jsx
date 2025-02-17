@@ -1,22 +1,21 @@
 /* eslint-disable no-unused-vars */
 import arr_right_white from '@/assets/icon/arr_right_white.svg';
 import arr_right_black from '@/assets/icon/arr_right_black.svg';
-import { Link, useLocation, useNavigate, useParams } from 'react-router';
+import { Link, useNavigate, useParams } from 'react-router';
 import InputCommon from '@/components/common/InputCommon';
 import { useFormik } from 'formik';
 import * as Yup from 'yup';
 import SelectOptCommon from '@/components/common/SelectOptCommon';
 import Button from '@/components/common/Button/Button';
 import { useEffect, useState } from 'react';
-import circle_close_white from '@/assets/icon/circle_close_white.svg';
 import avatar_default_dishes from '@/assets/icon/avatar_default_dishes.svg';
+import lau from '@/assets/icon/lau.svg';
 import AddCategoryModal from '@/components/modals/AddCategoryModal';
 import AddUnitModal from '@/components/modals/AddUnitModal';
 import { useDispatch, useSelector } from 'react-redux';
 import { getAllCategoriesDishes } from '@/redux/categoryDishesSlice';
 import { getAllUnit } from '@/redux/unitSlice';
-import arr_left_black from '@/assets/icon/arr_left_black.svg';
-import arr_left_white from '@/assets/icon/arr_left_white.svg';
+import back_white from '@/assets/icon/back_white.svg';
 import {
     addProduct,
     deleteImgProduct,
@@ -43,14 +42,12 @@ function AddProductItem() {
     const [isAnimationCloseBlockRemove, setIsAnimationCloseBlockRemove] =
         useState(false);
     const [isShowBlockRemove, setIsShowBlockRemove] = useState(false);
-    const [isStatusSaveProduct, setIsStatusSaveProduct] = useState(false);
     const [fileImgUploadNew, setFileImgUploadNew] = useState([]);
 
     const categoryDishesStore = useSelector((state) => state.categoryDishes);
     const unitStore = useSelector((state) => state.unit);
     const authStore = useSelector((state) => state.auth);
     const productStore = useSelector((state) => state.product);
-    console.log('selected: ', productStore.arrImgSelected);
 
     useEffect(() => {
         dispatch(getAllCategoriesDishes());
@@ -118,6 +115,7 @@ function AddProductItem() {
     // }, [productStore.urlImgProducts]);
 
     // validate form
+
     const formik = useFormik({
         initialValues: {
             ...productStore.formProductValue,
@@ -126,9 +124,6 @@ function AddProductItem() {
         validationSchema: Yup.object({
             nameProduct: Yup.string().required(
                 'Tên mặt hàng không được để trống'
-            ),
-            categoryDishes: Yup.string().required(
-                'Loại mặt hàng không được để trống'
             ),
             unit: Yup.string().required('Đơn vị không được để trống'),
             quantity: Yup.number()
@@ -146,12 +141,6 @@ function AddProductItem() {
         }),
         onSubmit: async (values) => {
             // Submit form
-            let result;
-            if (productStore.products) {
-                result = productStore.products.data.find(
-                    (item) => item.slug === slug
-                );
-            }
 
             const formData = new FormData();
             formData.append('name', values.nameProduct);
@@ -162,7 +151,6 @@ function AddProductItem() {
             formData.append('quantity', values.quantity);
             formData.append('note', values.note);
             formData.append('unit', values.unit);
-            formData.append('categoryDishes', values.categoryDishes);
 
             slug &&
                 formData.append(
@@ -185,24 +173,29 @@ function AddProductItem() {
                     : addProduct(formData)
             ).then((data) => {
                 if (data.payload?.success) {
+                    //toast
                     ToastMsg({
                         status: 'success',
                         msg: data.payload.message,
                         type: 'detailedNotification',
                         data: {
-                            img: productStore.urlImgProducts[0],
-                            nameProduct: values.nameProduct,
-                            selling: values.selling,
+                            img: data.payload.data.images[0].url,
+                            nameProduct: data.payload.data.nameProduct,
+                            selling: data.payload.data.selling,
+                            apiUpload: data.payload.data.slug,
                         },
+                        dataUpload: data.payload.data.slug,
+                        dispatch,
+                        navigate,
+                        funcCallApiGet: getProductBySlug,
+                        urlRedirect: `/admin/product-items/${data.payload.data.slug}`,
                     });
-                    setIsStatusSaveProduct(true);
-                    formik.resetForm();
+
                     slug
-                        ? (dispatch(getProductBySlug(data.payload.data.slug)),
-                          navigate(
-                              `/admin/product-items/${data.payload.data.slug}`
-                          ))
+                        ? dispatch(getProductBySlug(data.payload.data.slug))
                         : dispatch(resetUrlImgProduct());
+
+                    formik.resetForm();
                 } else {
                     ToastMsg({
                         status: 'error',
@@ -256,9 +249,9 @@ function AddProductItem() {
         <div className="font-cabin">
             {/* link */}
             <div className="flex items-center mb-5 text-text-primary">
-                <span onClick={() => navigate(-1)} className="cursor-pointer">
-                    Mặt hàng
-                </span>
+                <Link to="/admin/product-items">
+                    <span className="cursor-pointer">Mặt hàng</span>
+                </Link>
                 <img
                     src={
                         authStore.theme === 'light'
@@ -298,8 +291,8 @@ function AddProductItem() {
             ) : (
                 <div className="h-12 w-full mb-5 text-text-primary">
                     {slug
-                        ? '( Thay các thông tin cho sản phẩm sản phẩm của bạn )'
-                        : '( Thêm các thông tin cho sản phẩm sản phẩm của bạn )'}
+                        ? 'Thay các thông tin cho sản phẩm sản phẩm của bạn'
+                        : 'Thêm các thông tin cho sản phẩm sản phẩm của bạn'}
                 </div>
             )}
 
@@ -312,10 +305,16 @@ function AddProductItem() {
                             src={
                                 productStore.urlImgProducts?.length > 0
                                     ? productStore.urlImgProducts[0].url
-                                    : avatar_default_dishes
+                                    : lau
                             }
                             alt=""
-                            className="w-32 h-32 rounded-lg p-1 border object-cover"
+                            className={`w-32 h-32 rounded-lg object-cover
+                                        ${
+                                            productStore.urlImgProducts
+                                                ?.length > 0
+                                                ? ''
+                                                : 'p-4 border-2 border-dashed border-yellow-primary'
+                                        }`}
                         />
                     </div>
                     <label
@@ -351,7 +350,7 @@ function AddProductItem() {
                         </div>
                     )}
                     <div className="flex gap-5 flex-wrap justify-center items-center mt-5 ">
-                        {productStore.urlImgProducts.length > 0 &&
+                        {productStore.urlImgProducts?.length > 0 &&
                             productStore.urlImgProducts.map((item, index) => (
                                 <div
                                     key={index}
@@ -387,19 +386,6 @@ function AddProductItem() {
                             type="text"
                             placeholder="tên sản phẩm"
                             formik={formik}
-                        />
-                    </div>
-                    <div className="max-sm:col-span-2">
-                        <SelectOptCommon
-                            label="Loại mặt hàng"
-                            id="categoryDishes"
-                            formik={formik}
-                            list_opt={
-                                categoryDishesStore &&
-                                categoryDishesStore.category_dishes
-                            }
-                            type="add"
-                            setisopenmodal={setIsOpenModal}
                         />
                     </div>
                     <div className="max-sm:col-span-2">
@@ -474,31 +460,39 @@ function AddProductItem() {
                     </div>
 
                     <div className="col-span-2 flex items-center justify-between">
-                        <div className="flex items-center cursor-pointer">
-                            <img
-                                src={
-                                    authStore.theme === 'light'
-                                        ? arr_left_black
-                                        : arr_left_white
-                                }
-                                alt=""
-                            />
-                            <span
-                                onClick={() => navigate(-1)}
-                                className="text-text-primary hover:text-yellow-primary"
-                            >
-                                Quay lại
-                            </span>
+                        <div className="">
+                            {slug ? (
+                                <div className="w-28">
+                                    <Button
+                                        title="Xóa"
+                                        bg="delete"
+                                        type="button"
+                                        text_color="white"
+                                        color_ring={productStore.isLoading}
+                                    />
+                                </div>
+                            ) : (
+                                <div
+                                    onClick={() => navigate(-1)}
+                                    className="cursor-pointer w-28"
+                                >
+                                    <Button
+                                        title="Quay lại"
+                                        bg="exit"
+                                        type="button"
+                                        text_color="white"
+                                        icon={back_white}
+                                    />
+                                </div>
+                            )}
                         </div>
                         <div className="w-32 ">
                             <Button
                                 title={slug ? 'cập nhật' : 'Lưu'}
-                                bg="black"
+                                bg="save"
                                 type="submit"
                                 text_color="white"
-                                color_ring={
-                                    productStore.isLoading ? true : false
-                                }
+                                color_ring={productStore.isLoading}
                             />
                         </div>
                     </div>

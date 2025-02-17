@@ -2,8 +2,9 @@
 import useOutsideClick from '@/components/hooks/useOutsideClick';
 import { motion } from 'framer-motion';
 
-function TooltipCommon({ type, content, ...props }) {
-    const { isOpenTooltip, isCloseTooltipAnimation, handleOutSide } = props;
+function TooltipCommon({ content, ...props }) {
+    const { type, isOpenTooltip, isCloseTooltipAnimation, handleOutSide } =
+        props;
     const { ref } = useOutsideClick(handleOutSide);
 
     return (
@@ -15,10 +16,11 @@ function TooltipCommon({ type, content, ...props }) {
                     ? { opacity: 1 }
                     : { opacity: 0 }
             }
-            // onMouseEnter={handleOutSide}
             transition={{ duration: 0.2 }}
-            className={`absolute top-10 bg-bg-primary text-text-primary px-1 ${
-                type === 'avatar' ? 'w-52' : 'w-36'
+            className={`absolute top-10 bg-bg-tertiary text-text-primary px-1 ${
+                (type === 'avatar' && 'w-52') ||
+                (type === 'imp-exp' && 'w-48 px-2') ||
+                'w-36'
             } rounded-lg py-2 right-0 shadow-header-shadow z-20`}
         >
             {content}

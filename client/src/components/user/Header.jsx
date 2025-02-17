@@ -9,8 +9,8 @@ import { useEffect, useState } from 'react';
 import { Link } from 'react-router';
 import RightSideDrawModal from '../modals/RightSideDrawModal';
 import { useSelector } from 'react-redux';
-import TooltipCommon from '../common/TooltipCommon';
 import AvatarCommon from '../common/AvatarCommon';
+import SearchModal from '../modals/SearchModal';
 
 const category = [
     { name: 'Trang chủ', link: '/' },
@@ -25,6 +25,7 @@ function Header() {
 
     const authStore = useSelector((state) => state?.auth);
     const userStore = useSelector((state) => state?.user);
+    const productStore = useSelector((state) => state.product);
 
     const [fixedPosition, setFixedPosition] = useState(false);
     const [indexActiveCategory, setIsActiveCategory] = useState(null);
@@ -32,6 +33,13 @@ function Header() {
     const [isOpenTooltipUser, setIsOpenTooltipUser] = useState(false);
     const [isCloseTooltipAnimation, setIsCloseTooltipAnimation] =
         useState(false);
+
+    //state modal search
+    const [isOpenSearchModal, setIsOpenSearchModal] = useState(false);
+    const [isCloseSearchModalAnimation, setIsCloseSearchModalAnimation] =
+        useState(false);
+    const [charSearch, setCharSearch] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
 
     useEffect(() => {
         setFixedPosition(scrollPosition > 80);
@@ -52,6 +60,14 @@ function Header() {
 
             200
         );
+    };
+
+    const closeModalSearch = () => {
+        setIsCloseSearchModalAnimation(true);
+        setTimeout(() => {
+            setIsCloseSearchModalAnimation(false);
+            setIsOpenSearchModal(false);
+        }, 300);
     };
 
     return (
@@ -90,27 +106,14 @@ function Header() {
                         </Link>
                     ))}
                 </div>
-                <div className="flex items-center gap-4">
-                    <div className="flex bg-transparent border-b-2 max-md:hidden">
-                        <img
-                            src={fixedPosition ? search_black : search_white}
-                            alt="search"
-                            className="h-7"
-                        />
-                        <input
-                            type="text"
-                            className="bg-transparent outline-none px-2 placeholder:text-gray-300"
-                            placeholder="Tìm món ăn..."
-                        />
-                    </div>
-                    <div>
-                        <img
-                            src={fixedPosition ? search_black : search_white}
-                            alt="search"
-                            className="md:hidden"
-                        />
-                    </div>
-                    <div className="relative">
+                <div className="flex items-center gap-4 justify-center">
+                    <img
+                        onClick={() => setIsOpenSearchModal(true)}
+                        src={fixedPosition ? search_black : search_white}
+                        alt="search"
+                        className="cursor-pointer"
+                    />
+                    <div className="relative cursor-pointer">
                         <img
                             src={fixedPosition ? bag_black : bag_white}
                             alt="bag_bold"
@@ -153,6 +156,19 @@ function Header() {
                         <RightSideDrawModal
                             isOpenModalMenu={isOpenModalMenu}
                             setIsOpenModalMenu={setIsOpenModalMenu}
+                        />
+                    )}
+
+                    {isOpenSearchModal && (
+                        <SearchModal
+                            isOpenModal={isOpenSearchModal}
+                            closeModal={closeModalSearch}
+                            isCloseModalAnimation={isCloseSearchModalAnimation}
+                            arr={productStore.productsSearch?.data}
+                            isLoading={productStore.isLoadingSearch}
+                            charSearch={charSearch}
+                            setCharSearch={setCharSearch}
+                            currentPage={currentPage}
                         />
                     )}
                 </div>

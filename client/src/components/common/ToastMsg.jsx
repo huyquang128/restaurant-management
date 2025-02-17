@@ -6,13 +6,29 @@ import check_green_2 from '@/assets/icon/check_green_2.svg';
 import close_green from '@/assets/icon/close_green.svg';
 import close_red from '@/assets/icon/close_red.svg';
 import close_red_2 from '@/assets/icon/close_red_2.svg';
+import { Link, useNavigate } from 'react-router';
+import FormatVND from './FormatVND';
 
-function ToastMsg({
-    status = 'success',
-    msg,
-    type = 'simpleNotification',
-    data,
-}) {
+function ToastMsg({ ...props }) {
+    const {
+        status = 'success',
+        msg,
+        type = 'simpleNotification',
+        data,
+        dispatch,
+        navigate,
+        funcCallApiGet,
+        urlRedirect,
+    } = props;
+    
+    const fetchApi = () => {
+        dispatch(funcCallApiGet(data.apiUpload)).then((data) => {
+            if (data.payload.success) {
+                navigate(urlRedirect);
+            }
+        });
+    };
+
     const toastProduct = () => {
         return (
             <div className={`w-full bg-bg-tertiary font-cabin`}>
@@ -55,7 +71,7 @@ function ToastMsg({
                                         text-text-primary"
                         >
                             <img
-                                src={banner_1}
+                                src={data.img}
                                 alt="Icon"
                                 className="mr-3 h-16 w-14 rounded-lg object-cover"
                             />
@@ -64,19 +80,16 @@ function ToastMsg({
                                     {data.nameProduct}
                                 </div>
                                 <div className="">
-                                    {Number(data.selling).toLocaleString(
-                                        'vi-VN'
-                                    ) + ' ₫'}
+                                    {FormatVND(data.selling)}
                                 </div>
                             </div>
                         </div>
                         <div className="text-end px-3 pb-3">
                             <Button
                                 title="Xem ngay"
-                                bg="black"
-                                text_color="white"
+                                bg="add"
                                 type="button"
-                                bg_border="black"
+                                handleClick={fetchApi}
                             />
                         </div>
                     </>
@@ -87,7 +100,7 @@ function ToastMsg({
 
     const toastId = toast(toastProduct(), {
         position: 'top-center',
-        autoClose: 5000,
+        autoClose: 3000,
         hideProgressBar: true,
         closeOnClick: false,
         pauseOnHover: false,

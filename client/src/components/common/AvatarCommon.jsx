@@ -22,7 +22,9 @@ function AvatarCommon({
                 <div
                     onMouseEnter={() => setIsOpenTooltipUser(true)}
                     onMouseLeave={handleCloseTooltip}
-                    className={`relative cursor-pointer flex items-center gap-2 ${type === 'admin' ? '' : 'max-md:hidden'}`}
+                    className={`relative cursor-pointer flex items-center gap-2 ${
+                        type === 'admin' ? '' : 'max-md:hidden'
+                    }`}
                 >
                     <div
                         className="h-8 w-8 rounded-full bg-black flex justify-center items-center
@@ -34,7 +36,9 @@ function AvatarCommon({
                             className="object-cover w-full h-full"
                         />
                     </div>
-                    <div className="max-md:hidden line-clamp-1">{userStore?.user?.username}</div>
+                    <div className="max-md:hidden line-clamp-1">
+                        {userStore?.user?.username}
+                    </div>
                     {isOpenTooltipUser && (
                         <TooltipCommon
                             isOpenTooltip={isOpenTooltipUser}
@@ -45,7 +49,7 @@ function AvatarCommon({
                             content={<UserTooltip />}
                         />
                     )}
-                    <div className="absolute -bottom-5 bg-transparent h-10 w-20 right-0"></div>
+                    <div className="absolute -bottom-3 bg-transparent h-5 w-24 max-md:w-[50px] -right-2"></div>
                 </div>
             </Link>
         </>

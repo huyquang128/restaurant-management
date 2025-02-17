@@ -21,6 +21,7 @@ function BlockRemoveCommon({ ...props }) {
         currentId,
         arrRemove,
         removeFileImgUploadNew,
+        setIsCheckedAll,
     } = props;
 
     const handleRemove = () => {
@@ -61,6 +62,7 @@ function BlockRemoveCommon({ ...props }) {
                     currentId={currentId}
                     arrRemove={arrRemove}
                     removeFileImgUploadNew={removeFileImgUploadNew}
+                    setIsCheckedAll={setIsCheckedAll}
                 />
             )}
         </motion.div>

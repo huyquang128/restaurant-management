@@ -4,6 +4,7 @@ const slugify = require('slugify');
 const ProductSchema = new mongoose.Schema({
     name: { type: String, required: true },
     slug: { type: String, unique: true },
+    name_no_accents: { type: String, required: true },
     cost: { type: Number },
     promotion: { type: Number },
     selling: { type: Number },

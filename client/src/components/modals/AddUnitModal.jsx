@@ -64,7 +64,7 @@ function AddUnitModal({ isOpenModal, setIsOpenModal }) {
                         : { opacity: 0 }
                 }
                 transition={{ duration: 0.3 }}
-                className="bg-white w-[380px] p-3 rounded-lg shadow-lg"
+                className="bg-bg-tertiary w-[380px] p-3 rounded-lg shadow-lg"
             >
                 <div className="flex justify-end ">
                     <FontAwesomeIcon
@@ -86,13 +86,13 @@ function AddUnitModal({ isOpenModal, setIsOpenModal }) {
                     />
                     <div className="flex gap-2 mt-5">
                         <Button
-                            bg="white"
+                            bg="exit"
                             title="Thoát"
                             text_color="black"
                             handleClick={closeModal}
                             type="button"
                         />
-                        <Button bg="black" title="Lưu" text_color="white" />
+                        <Button bg="save" title="Lưu" text_color="white" />
                     </div>
                 </form>
             </motion.div>

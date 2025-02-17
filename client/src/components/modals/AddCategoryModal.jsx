@@ -66,7 +66,7 @@ function AddCategoryModal({ isOpenModal, setIsOpenModal }) {
                         : { opacity: 0 }
                 }
                 transition={{ duration: 0.3 }}
-                className="bg-white w-[380px] p-3 rounded-lg shadow-lg"
+                className="bg-bg-secondary w-[380px] p-3 rounded-lg shadow-lg"
             >
                 <div className="flex justify-end ">
                     <FontAwesomeIcon
@@ -76,7 +76,7 @@ function AddCategoryModal({ isOpenModal, setIsOpenModal }) {
                     />
                 </div>
                 <form onSubmit={formik.handleSubmit}>
-                    <h1 className="text-center mb-5 text-xl">
+                    <h1 className="text-center mb-5 text-xl text-text-primary">
                         Thêm danh mục mặt hàng
                     </h1>
                     <InputCommon
@@ -88,13 +88,13 @@ function AddCategoryModal({ isOpenModal, setIsOpenModal }) {
                     />
                     <div className="flex gap-2 mt-5">
                         <Button
-                            bg="white"
+                            bg="exit"
                             title="Thoát"
-                            text_color="black"
+                            text_color="white"
                             handleClick={closeModal}
                             type="button"
                         />
-                        <Button bg="black" title="Lưu" text_color="white" />
+                        <Button bg="save" title="Lưu" text_color="white" />
                     </div>
                 </form>
             </motion.div>

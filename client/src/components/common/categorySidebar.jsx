@@ -43,13 +43,15 @@ export const categorySidebar = [
         icon_black: bill_black,
         icon_yellow: bill_yellow,
         icon_white: bill_white,
+        children: [{ name: 'Đơn hiện thời' }, { name: 'Lịch sử đơn hàng' }],
     },
     {
         name: 'Đặt bàn',
-        link: '',
+        link: '/admin/set-table',
         icon_black: calendar_black,
         icon_yellow: calendar_yellow,
         icon_white: calendar_white,
+        children: [{ name: 'Sơ đồ bàn' }, { name: 'Lịch sử đặt bàn' }],
     },
     {
         name: 'Mặt hàng',
@@ -60,7 +62,7 @@ export const categorySidebar = [
     },
     {
         name: 'Thực đơn',
-        link: '',
+        link: '/admin/menus',
         icon_black: menuCall_black,
         icon_yellow: menuCall_yellow,
         icon_white: menuCall_white,
@@ -78,6 +80,10 @@ export const categorySidebar = [
         icon_black: staff_black,
         icon_yellow: staff_yellow,
         icon_white: staff_white,
+        children: [
+            { name: 'Danh sách nhân viên' },
+            { name: 'Phân quyền người dùng' },
+        ],
     },
     {
         name: 'Khách hàng',
@@ -92,9 +98,10 @@ export const categorySidebar = [
         icon_black: system_black,
         icon_yellow: system_yellow,
         icon_white: system_white,
+        children: [{ name: 'Quản lý menu' }, { name: 'Quản lý slide' }],
     },
     {
-        name: 'Cài đặt',
+        name: 'Thiết lập nhà hàng',
         link: '',
         icon_black: setting_black,
         icon_yellow: setting_yellow,

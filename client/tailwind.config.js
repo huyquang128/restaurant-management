@@ -19,6 +19,7 @@ export default {
                 'bg-tertiary': 'var(--bg-tertiary)',
                 'text-primary': 'var(--text-primary)',
                 'color-active': 'var(--color-active)',
+                'border-primary': 'var(--border-primary)',
 
                 'yellow-primary': '#cfa670',
 
@@ -28,7 +29,7 @@ export default {
                 'black-primary': '#151515',
                 'black-secondary': '#212121',
 
-                'green-primary': '#22c55e'
+                'green-primary': '#22c55e',
             },
             fontFamily: {
                 cabin: ['Cabin', 'serif'],

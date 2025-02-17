@@ -20,7 +20,7 @@ import productReducer from './productSlice';
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['user', 'unit', 'product'],
+    blacklist: ['user', 'unit', 'product', 'categoryDishes'],
 };
 
 const rootReducer = {

@@ -6,28 +6,34 @@ import arr_right_black from '@/assets/icon/arr_right_black.svg';
 import arr_right_white from '@/assets/icon/arr_right_white.svg';
 import arr_left_white from '@/assets/icon/arr_left_white.svg';
 import arr_left_black from '@/assets/icon/arr_left_black.svg';
+import { useSearchParams } from 'react-router';
 
-function PaginationCommon({
-    totalProducts,
-    getPageFunc,
-    pageSize,
-    setIsCheckedAll,
-    setArrActive,
-}) {
+function PaginationCommon({ ...props }) {
+    const {
+        totalProducts,
+        getPageFunc,
+        pageSize,
+        setIsCheckedAll,
+        setArrActive,
+        currentPage,
+        setCurrentPage,
+        dataUpload,
+    } = props;
+
     const dispatch = useDispatch();
-
-    const [currentPage, setCurrentPage] = useState(1);
+    const [searchParams, setSearchParams] = useSearchParams();
 
     const authStore = useSelector((state) => state.auth);
 
     const onChangePage = (page) => {
         setCurrentPage(page);
+        setSearchParams({ page });
     };
 
     //hook
     useEffect(() => {
-        dispatch(getPageFunc(currentPage)).then((data) => {
-            if (data.payload.success) {
+        dispatch(getPageFunc(dataUpload)).then((data) => {
+            if (data.payload?.success) {
                 setIsCheckedAll(false);
                 setArrActive([]);
             }
@@ -46,7 +52,7 @@ function PaginationCommon({
                 itemRender={(page, type, originalElement) => {
                     if (type === 'prev') {
                         return (
-                            <button className="border border-gray-200 px-2 py-2 rounded-md cursor-pointer">
+                            <button className="bg-bg-tertiary px-2 py-2 rounded-lg cursor-pointer">
                                 <img
                                     src={
                                         authStore.theme === 'light'
@@ -60,7 +66,7 @@ function PaginationCommon({
                     }
                     if (type === 'next') {
                         return (
-                            <button className="border border-gray-200 px-2 py-2 rounded-md cursor-pointer">
+                            <button className="bg-bg-tertiary px-2 py-2 rounded-lg cursor-pointer">
                                 <img
                                     src={
                                         authStore.theme === 'light'
@@ -77,11 +83,11 @@ function PaginationCommon({
                     }
                     return (
                         <button
-                            className={`px-4 py-2 border ${
+                            className={`px-4 py-2 bg-bg-tertiary ${
                                 authStore.theme === 'light'
                                     ? 'text-black-base'
                                     : 'text-white'
-                            } border-gray-300 rounded-md ${
+                            }  rounded-lg ${
                                 currentPage === page
                                     ? 'bg-orange-200 text-yellow-600'
                                     : ''

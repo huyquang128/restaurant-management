@@ -2,19 +2,14 @@
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { motion } from 'framer-motion';
-import { useState } from 'react';
-import { useSelector } from 'react-redux';
-import { Link, useNavigate } from 'react-router';
-import arr_down_black from '@/assets/icon/arr_down_black.svg';
-import arr_down_white from '@/assets/icon/arr_down_white.svg';
+
+import CategoryListContent from '../common/CategoryListContent';
 
 function SidebarAdminModal({ ...props }) {
-    const { isOpenrModal, arr, isCloseModalAnimation, closeModal } = props;
-    const authStore = useSelector((state) => state.auth);
-    const navigate = useNavigate();
+    const { isOpenrModal, isCloseModalAnimation, closeModal } = props;
 
     return (
-        <div className="fixed top-0 left-0 bottom-0 right-0 flex justify-start bg-black bg-opacity-30">
+        <div className="fixed top-0 z-20 left-0 bottom-0 right-0 flex justify-start bg-black bg-opacity-30">
             <motion.div
                 initial={{ opacity: 0, x: '-100%' }}
                 animate={
@@ -26,43 +21,7 @@ function SidebarAdminModal({ ...props }) {
                 className=" w-80 min-h-screen flex gap-1 "
             >
                 <div className="bg-bg-tertiary flex-1 shadow-header-shadow">
-                    <h1 className="text-center py-6 text-2xl text-yellow-primary border-b border-gray-100 ">
-                        SAVOR.
-                    </h1>
-                    {/* category */}
-                    {arr.map((item, index) => (
-                        <div
-                            key={index}
-                            className="flex justify-between px-5 py-4 cursor-pointer"
-                        >
-                            <div className="flex items-center justify-start gap-2 text-text-primary">
-                                <img
-                                    src={
-                                        authStore.theme === 'light'
-                                            ? item.icon_black
-                                            : item.icon_white
-                                    }
-                                    alt=""
-                                    className="h-5 -translate-y-[2px]"
-                                />
-                                <div
-                                    onClick={() => (
-                                        navigate(item.link), closeModal()
-                                    )}
-                                >
-                                    {item.name}
-                                </div>
-                            </div>
-                            <img
-                                src={
-                                    authStore.theme === 'light'
-                                        ? arr_down_black
-                                        : arr_down_white
-                                }
-                                alt=""
-                            />
-                        </div>
-                    ))}
+                    <CategoryListContent closeModal={closeModal} />
                 </div>
 
                 <FontAwesomeIcon

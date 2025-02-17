@@ -1,15 +1,20 @@
 import { axiosInstancePublic } from './axiosInstance';
 
 //api public
-export const getAllProductsApi = async (pageNumber) => {
+export const getAllProductsPageApi = async (pageNumber) => {
     const response = await axiosInstancePublic.get(
-        '/product/get-all-products',
+        '/product/get-all-products-pages',
         {
             params: {
                 page: pageNumber,
             },
         }
     );
+    return response.data;
+};
+
+export const getAllProductsApi = async () => {
+    const response = await axiosInstancePublic.get('/product/get-all-products');
     return response.data;
 };
 
@@ -33,6 +38,31 @@ export const getImagesIdsApi = async (ids) => {
             ids,
         },
     });
+    return response.data;
+};
+
+export const searchNameProductApi = async ({ page, q }) => {
+    const response = await axiosInstancePublic.get(
+        `/product/search-product-name`,
+        {
+            params: {
+                page,
+                q,
+            },
+        }
+    );
+    return response.data;
+};
+
+export const searchNameProductNoPageApi = async (q) => {
+    const response = await axiosInstancePublic.get(
+        `/product/search-product-name-no-pages`,
+        {
+            params: {
+                q,
+            },
+        }
+    );
     return response.data;
 };
 
