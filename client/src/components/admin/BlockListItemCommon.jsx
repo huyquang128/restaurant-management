@@ -1,7 +1,6 @@
 /* eslint-disable react/prop-types */
 import { Link } from 'react-router';
 import CapitalizeFirstLetter from '@/components/common/CapitalizeFirstLetter';
-import FormatVND from '@/components/common/FormatVnd';
 import PaginationCommon from '@/components/common/Pagination/PaginationCommon.jsx';
 import BlockRemoveCommon from '@/components/common/BlockRemoveCommon';
 import avatar_default_dishes from '@/assets/icon/avatar_default_dishes.svg';
@@ -12,6 +11,7 @@ import email from '@/assets/icon/email.svg';
 import calendar_2 from '@/assets/icon/calendar_2.svg';
 import phone from '@/assets/icon/phone.svg';
 import { useSelector } from 'react-redux';
+import FormatVND from '../common/FormatVND.jsx';
 
 function BlockListItemCommon({ ...props }) {
     const {
