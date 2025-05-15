@@ -34,7 +34,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
 app.use(
     cors({
-        origin: 'http://localhost:5173', // Chỉ định domain của client
+        origin: 'https://restaurant-management-o74o-b305gah24.vercel.app', // Chỉ định domain của client
         credentials: true, // Cho phép gửi cookie / thông tin xác thực
     })
 );
