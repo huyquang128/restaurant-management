@@ -18,7 +18,6 @@ import UnderLineCategoryCommon from '@/components/common/UnderLineCategoryCommon
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductBySlug } from '@/redux/productSlice';
 import CapitalizeFirstLetter from '@/components/common/CapitalizeFirstLetter';
-import renderAverageStar from '@/components/common/RenderAverageStar';
 import { formatTimeAgo } from '@/components/common/formatTimeAgo';
 import ToastMsg from '@/components/common/ToastMsg';
 import { AnimatePresence } from 'framer-motion';
@@ -30,6 +29,7 @@ import happy from '@/assets/icon/happy.svg';
 import banner_2 from '@/assets/image/banner_2.webp';
 import { motion } from 'framer-motion';
 import ProductDetailCardCommon from '@/components/common/CardCommon/ProductDetailCardCommon';
+import renderAverageStar from '@/components/common/renderAverageStar';
 
 const category = [
     {
