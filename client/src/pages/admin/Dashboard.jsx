@@ -4,7 +4,6 @@ import bill from '@/assets/icon/bill.svg';
 import bag_2 from '@/assets/icon/bag_2.svg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faPlus } from '@fortawesome/free-solid-svg-icons';
-import DateFilter from '@/components/common/dateFIlter';
 import {
     CartesianGrid,
     Legend,
@@ -31,6 +30,7 @@ import TrendingUpAnimation from '@/components/common/TrendingUpAnimation';
 import TrendingDownAnimation from '@/components/common/TrendingDownAnimation';
 import CapitalizeFirstLetter from '@/components/common/CapitalizeFirstLetter';
 import { getProductSold } from '@/redux/productSlice';
+import DateFilter from '@/components/common/DateFIlter';
 
 const arrTop = [
     { name: 'Doanh thu', icon: statistic, sl: 4300 },
