@@ -1,4 +1,3 @@
-import ProductDetailCardCommon from '@/components/common/CardCommon/ProductDetailCardCommon';
 import { listStar } from '@/components/common/listStart';
 import ReviewModal from '@/components/modals/ReviewModal';
 import {
@@ -30,6 +29,7 @@ import angry from '@/assets/emoji/angry.svg';
 import happy from '@/assets/icon/happy.svg';
 import banner_2 from '@/assets/image/banner_2.webp';
 import { motion } from 'framer-motion';
+import ProductDetailCardCommon from '@/components/common/CardCommon/ProductDetailCardCommon';
 
 const category = [
     {
