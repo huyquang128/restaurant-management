@@ -111,8 +111,8 @@ const login = async (req, res) => {
 
         res.cookie('refreshToken', refreshToken, {
             httpOnly: true,
-            secure: false,
-            sameSite: 'strict',
+            secure: true,
+            sameSite: 'None',
         });
 
         res.json({
@@ -160,8 +160,8 @@ const refreshTokenJWT = async (req, res) => {
 
         res.cookie('refreshToken', newRefreshToken, {
             httpOnly: true,
-            secure: false,
-            sameSite: 'Strict',
+            secure: true,
+            sameSite: 'None',
         });
 
         return res.json({
