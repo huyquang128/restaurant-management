@@ -30,7 +30,6 @@ import ManagementSystem from '@/pages/admin/ManagementSystem';
 import ManagementSlideShow from '@/pages/admin/ManagementSlideShow';
 import InfoCustomerDetail from '@/pages/admin/InfoCustomerDetail';
 import ListStaff from '@/pages/admin/ListStaff';
-import AddStaff from '@/pages/admin/addStaff';
 import HistoryOrder from '@/pages/admin/HistoryOrder';
 import MyDocumentBill from '@/components/common/MyDocumentBill';
 import UnauthPage from '@/pages/UnauthPage';
@@ -46,6 +45,7 @@ import ManagementEvent from '@/pages/admin/ManagementEvent';
 import AddSpecialOffer from '@/pages/admin/AddSpecialOffer';
 import ProductDetail from '@/pages/product/ProductDetail';
 import SettingAdmin from '@/pages/admin/SettingAdmin';
+import AddStaff from '@/pages/admin/AddStaff';
 
 const routerPublic = [
     { path: '', components: <Home /> },
