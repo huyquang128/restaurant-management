@@ -1,8 +1,7 @@
 import { refreshToken } from '@/redux/authSlice';
 import axios from 'axios';
 
-export const BASE_URL =
-    'https://restaurant-management-o74o-b305gah24.vercel.app/api/v1';
+export const BASE_URL = 'https://restaurant-management-o74o.vercel.app/api/v1';
 
 export const axiosInstancePublic = axios.create({
     baseURL: BASE_URL,
