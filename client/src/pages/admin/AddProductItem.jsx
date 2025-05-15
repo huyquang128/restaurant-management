@@ -174,7 +174,7 @@ function AddProductItem() {
                         msg: data.payload.message,
                         type: 'detailedNotification',
                         data: {
-                            img: data.payload.data.images[0].url,
+                            img: data.payload.data.images[0]?.url,
                             nameProduct: data.payload.data.nameProduct,
                             selling: data.payload.data.selling,
                             apiUpload: data.payload.data.slug,

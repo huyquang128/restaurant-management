@@ -14,7 +14,7 @@ const reviewSchema = new mongoose.Schema({
     response: {
         responder: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
         content: { type: String },
-        emoji: String, 
+        emoji: String,
         respondedAt: { type: Date },
     },
     isDeleted: { type: Boolean, default: false },

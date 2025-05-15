@@ -1125,7 +1125,6 @@ async function getRevenueProfitReport(req, res) {
         pipeline.push({ $sort: { _id: 1 } });
 
         const rawData = await Order.aggregate(pipeline);
-        console.log('🚀 ~ getRevenueProfitReport ~ rawData:', rawData);
 
         const filledData = fillMissingData(type, rawData, { day, month, year });
 

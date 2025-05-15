@@ -1,38 +1,25 @@
 import SearchCommon from '@/components/common/SearchCommon';
 import add_white from '@/assets/icon/add_white.svg';
 import Button from '@/components/common/Button/Button';
-import import_white from '@/assets/icon/import_white.svg';
 import export_white from '@/assets/icon/export_white.svg';
 import more_white from '@/assets/icon/more_white.svg';
 import more_black from '@/assets/icon/more_black.svg';
 import { Link } from 'react-router';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useState } from 'react';
-import {
-    deleteProduct,
-    getAllProductPages,
-    getAllProducts,
-} from '@/redux/productSlice';
+import { deleteProduct, getAllProductPages } from '@/redux/productSlice';
 
-import TooltipCommon from '@/components/common/TooltipCommon';
-import ActImportExportTooltip from '@/components/tooltipsContent/ActImportExportTooltip';
 import SearchModal from '@/components/modals/SearchModal';
-import BlockListItemCommon from '@/components/admin/BlockListItemCommon';
 import PaginationCommon from '@/components/common/Pagination/PaginationCommon';
 import edit_blue from '@/assets/icon/edit_blue.svg';
 import show_green from '@/assets/icon/show_green.svg';
 import trash_red from '@/assets/icon/trash_red.svg';
 import CapitalizeFirstLetter from '@/components/common/CapitalizeFirstLetter';
-
-const categories = [
-    { name: 'Tên mặt hàng' },
-    { name: 'Giá thành' },
-    { name: 'Đơn vị tính' },
-    // { name: 'Số lượng' },
-    { name: 'Ghi chú' },
-];
+import ToastMsg from '@/components/common/ToastMsg';
 
 function ProductsAdmin() {
+    const dispatch = useDispatch();
+
     const productStore = useSelector((state) => state.product);
     const authStore = useSelector((state) => state.auth);
 
@@ -46,16 +33,9 @@ function ProductsAdmin() {
     const [charSearch, setCharSearch] = useState('');
     const [currentPage, setCurrentPage] = useState(1);
 
+    const [idChange, setIsChange] = useState(false);
+
     //handle Events
-    const closeTooltipActImportExport = () => {
-        setIsCloseTooltipActImportExport(true);
-
-        setTimeout(() => {
-            setIsCloseTooltipActImportExport(false);
-            setIsOpenTooltipActImportExport(false);
-        }, 300);
-    };
-
     const closeModalSearch = () => {
         setIsCloseSearchModalAnimation(true);
         setTimeout(() => {
@@ -110,7 +90,7 @@ function ProductsAdmin() {
                                     rounded-lg relative"
                     >
                         <img
-                            src={item.images[0].url}
+                            src={item.images[0] && item.images[0]?.url}
                             alt=""
                             className="h-36 w-36 rounded-full absolute -top-14 
                             shadow-header-shadow object-cover"
@@ -149,6 +129,22 @@ function ProductsAdmin() {
                                 </div>
                             </Link>
                             <div
+                                onClick={() =>
+                                    dispatch(
+                                        deleteProduct({
+                                            id: item._id,
+                                            categoryId:
+                                                item.categoryDishes?._id,
+                                        })
+                                    ).then((data) => {
+                                        if (data.payload.success) {
+                                            ToastMsg({
+                                                msg: 'Đã xóa sản phẩm',
+                                            });
+                                            setIsChange(true);
+                                        }
+                                    })
+                                }
                                 className="h-9 w-9 bg-bg-red flex justify-center 
                                             items-center rounded-lg cursor-pointer"
                             >
@@ -176,7 +172,10 @@ function ProductsAdmin() {
                     currentPage={currentPage}
                     setCurrentPage={setCurrentPage}
                     dataUpload={currentPage}
+                    setIsCheckedAll={() => {}}
+                    setArrActive={() => {}}
                     type="product"
+                    idChange={idChange}
                 />
             </div>
 

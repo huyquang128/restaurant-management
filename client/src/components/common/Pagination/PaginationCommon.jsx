@@ -20,6 +20,7 @@ function PaginationCommon({ ...props }) {
         setArrActive,
         type,
         id,
+        idChange,
     } = props;
 
     const dispatch = useDispatch();
@@ -42,7 +43,7 @@ function PaginationCommon({ ...props }) {
                 type !== 'order' && setArrActive([]);
             }
         });
-    }, [dispatch, currentPage, id]);
+    }, [dispatch, currentPage, id, idChange]);
 
     return (
         <div

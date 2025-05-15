@@ -1,12 +1,9 @@
-import banner_1 from '@/assets/image/banner_1.jpg';
-import { useEffect, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link, useLocation } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import show_pass_white from '@/assets/icon/show_pass_white.svg';
 import arr_down_black from '@/assets/icon/arr_down_black.svg';
 import add_white from '@/assets/icon/add_white.svg';
-import star_black from '@/assets/icon/star_black.svg';
 import star_yellow from '@/assets/icon/star_yellow.svg';
 import { useDispatch, useSelector } from 'react-redux';
 import {
@@ -17,19 +14,15 @@ import CapitalizeFirstLetter from '@/components/common/CapitalizeFirstLetter';
 import FormatVND from '@/components/common/FormatVND';
 import Button from '@/components/common/Button/Button';
 import TooltipCommon from '@/components/common/TooltipCommon';
-import FastView from '@/components/tooltipsContent/FastView';
-import ProductDetailModal from '@/components/modals/ProductDetailModal';
 import PaginationCommon from '@/components/common/Pagination/PaginationCommon';
 import {
     getProductBySlug,
     getProductsPageByCategory,
-    setProductSeleted,
 } from '@/redux/productSlice';
 import RotatingLinesCommon from '@/components/common/spinnerAnimation/RotatingLinesCommon';
 import SortDishesTooltip from '@/components/tooltipsContent/SortDishesTooltip';
 import { useUnderlinePosition } from '@/components/hooks/useUnderlinePosition';
 import UnderLineCategoryCommon from '@/components/common/UnderLineCategoryCommon';
-import { AnimatePresence } from 'framer-motion';
 import { showModal } from '@/redux/modalSlice';
 
 const valueSort = [
@@ -63,7 +56,6 @@ function Menu() {
     ] = useState(false);
 
     //page number state
-    const [currentPage, setCurrentPage] = useState(1);
 
     const categoryDishesStore = useSelector((state) => state.categoryDishes);
     const productStore = useSelector((state) => state.product);
@@ -83,20 +75,27 @@ function Menu() {
     );
 
     //sắp xếp mặt hàng
-    const sortProducts =
-        productStore.products?.data &&
-        [...productStore.products.data].sort(
-            (a, b) =>
-                (productStore.valueSortDishes === 'asc' &&
-                    a.promotion - b.promotion) ||
-                (productStore.valueSortDishes === 'desc' &&
-                    b.promotion - a.promotion) ||
-                (productStore.valueSortDishes === 'az' &&
-                    a.name.localeCompare(b.name)) ||
-                (productStore.valueSortDishes === 'za' &&
-                    b.name.localeCompare(a.name)) ||
-                b.sold - a.sold
-        );
+    const sortProducts = useMemo(() => {
+        const arr =
+            categoryDishesStore?.category_dishes &&
+            categoryDishesStore?.category_dishes[activeCategory]?.products &&
+            [
+                ...categoryDishesStore.category_dishes[activeCategory].products,
+            ].sort(
+                (a, b) =>
+                    (productStore.valueSortDishes === 'asc' &&
+                        a.promotion - b.promotion) ||
+                    (productStore.valueSortDishes === 'desc' &&
+                        b.promotion - a.promotion) ||
+                    (productStore.valueSortDishes === 'az' &&
+                        a.name.localeCompare(b.name)) ||
+                    (productStore.valueSortDishes === 'za' &&
+                        b.name.localeCompare(a.name)) ||
+                    b.sold - a.sold
+            );
+
+        return arr;
+    }, [activeCategory]);
 
     //handle events
     const handleHoverProduct = (index) => {
@@ -137,6 +136,7 @@ function Menu() {
                                 {decodedString}
                             </span>
                         </div>
+
                         {/* list menu category */}
                         <div className="flex items-center gap-5 mb-5 relative">
                             {categoryDishesStore.category_dishes?.map(
@@ -172,8 +172,13 @@ function Menu() {
                         </div>
                         <div className="flex justify-between items-center mb-5 ">
                             <div className="text-gray-primary max-md:hidden">
-                                Hiển thị {productStore.products?.page}-8 trên{' '}
-                                {productStore.products?.totalPages} kết quả
+                                Hiển thị{' '}
+                                {
+                                    categoryDishesStore?.category_dishes[
+                                        activeCategory
+                                    ]?.products.length
+                                }{' '}
+                                mặt hàng
                             </div>
                             <div
                                 className="flex items-center gap-2 cursor-pointer"
@@ -212,12 +217,13 @@ function Menu() {
                                 </div>
                             </div>
                         </div>
+
                         {/* list dishes */}
                         <div
                             className="grid grid-cols-2 gap-x-6 gap-y-10 font-oswald
                                         max-md:grid-cols-1 max-sm:grid-cols-1 "
                         >
-                            {productStore.isLoading ? (
+                            {categoryDishesStore.isLoading ? (
                                 <div className="flex justify-center col-span-4">
                                     <RotatingLinesCommon />
                                 </div>
@@ -298,6 +304,7 @@ function Menu() {
                                                     </div>
                                                 </div>
                                             </div>
+
                                             {/* info product */}
                                             <div className="flex-1">
                                                 <h3 className="text-lg text-center flex justify-between items-center mb-3 mt-2 px-4">
@@ -366,30 +373,7 @@ function Menu() {
                         </div>
                     </div>
                     {/* pagination */}
-                    <div className="mt-20">
-                        {categories.length > 0 && (
-                            <PaginationCommon
-                                totalProducts={
-                                    categoryDishesStore.category_dishes
-                                        ?.totalCategory
-                                }
-                                getPageFunc={getProductsPageByCategory}
-                                pageSize={
-                                    categoryDishesStore.categoryDishesStore
-                                        ?.pageSize
-                                }
-                                currentPage={currentPage}
-                                setCurrentPage={setCurrentPage}
-                                dataUpload={{
-                                    id: categories[activeCategory]?._id,
-                                    pageNumber: currentPage,
-                                }}
-                                type="order"
-                                funcCallApiGet={getAllCategoriesDishesPages}
-                                id={categories[activeCategory]?._id}
-                            />
-                        )}
-                    </div>
+
                     {/* MODAL */}
                 </div>
             </div>

@@ -94,9 +94,9 @@ const productServicePrivate = (axiosPrivate) => ({
         return response.data;
     },
 
-    deleteProductApi: async (id) => {
+    deleteProductApi: async (id, categoryId) => {
         const response = await axiosPrivate.delete(`/product/delete-product`, {
-            data: { ids: id },
+            data: { id, categoryId },
         });
         return response.data;
     },

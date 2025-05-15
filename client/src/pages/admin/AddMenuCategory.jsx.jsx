@@ -256,7 +256,7 @@ function AddMenuCategory() {
                     </div>
 
                     {/* list dishes */}
-                    <div className="col-span-2 bg-bg-tertiary py-2 rounded-lg">
+                    <div className="col-span-2 bg-bg-secondary py-2 rounded-lg">
                         {categoryDishesStore.category_dishes?.products?.length >
                             0 ||
                         productStore.productSelectedInCategoryAdd.length > 0 ? (

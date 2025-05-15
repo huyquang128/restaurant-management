@@ -130,12 +130,12 @@ export const updateProduct = createAsyncThunk(
 
 export const deleteProduct = createAsyncThunk(
     '/product/delete-product',
-    async (id, { rejectWithValue, getState, dispatch }) => {
+    async ({ id, categoryId }, { rejectWithValue, getState, dispatch }) => {
         try {
             const api = productServicePrivate(
                 axiosInstancePrivate(getState, dispatch)
             );
-            const response = await api.deleteProductApi(id);
+            const response = await api.deleteProductApi(id, categoryId);
             return response;
         } catch (error) {
             return rejectWithValue(error.response.data.message);

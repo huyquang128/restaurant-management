@@ -295,7 +295,10 @@ function ReviewAdmin() {
                             className="relative overflow-visible swiper-slide-review"
                         >
                             <img
-                                src={item.product.images[0].url}
+                                src={
+                                    item.product?.images &&
+                                    item.product?.images[0]?.url
+                                }
                                 alt=""
                                 className="h-36 w-36 rounded-full -top-4 
                                             shadow-img-shadow left-4 object-cover 
@@ -311,14 +314,14 @@ function ReviewAdmin() {
                                             gap-2 border-b border-border-primary mb-5"
                                 >
                                     <span className="font-oswald font-medium ">
-                                        {item.product.name.toUpperCase()}
+                                        {item.product?.name.toUpperCase()}
                                     </span>
                                     <span className="text-[#a4e3ce] font-oswald ">
-                                        {item.product.categoryDishes.name}
+                                        {item.product?.categoryDishes?.name}
                                     </span>
                                 </div>
                                 <p className="col-span-2 mb-3 opacity-70 line-clamp-2 px-1">
-                                    {CapitalizeFirstLetter(item.content)}
+                                    {CapitalizeFirstLetter(item?.content)}
                                 </p>
                                 <div
                                     className="col-span-2 flex justify-between bg-[#5e6c93] text-white
@@ -841,13 +844,16 @@ function ReviewAdmin() {
                                 <div className="flex flex-col items-center gap-12 w-52">
                                     <div className="flex flex-col items-center gap-5">
                                         <img
-                                            src={item.product.images[0].url}
+                                            src={
+                                                item.product?.images &&
+                                                item.product?.images[0]?.url
+                                            }
                                             alt=""
                                             className="h-28 w-28 rounded-full shadow-lg object-cover 
                                             "
                                         />
                                         <span className="font-oswald">
-                                            {item.product.name}
+                                            {item.product?.name}
                                         </span>
                                     </div>
                                 </div>
