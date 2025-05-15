@@ -1,12 +1,9 @@
 /* eslint-disable react/prop-types */
 import { faXmark } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { AnimatePresence, motion } from 'framer-motion';
-import ProductDetailCardCommon from '../common/CardCommon/productDetailCardCommon';
-import { useDispatch, useSelector } from 'react-redux';
-import useOutsideClickModal from '../hooks/useOutsideClickModal';
-import { useRef } from 'react';
-import { hideModal } from '@/redux/modalSlice';
+import { motion } from 'framer-motion';
+import { useSelector } from 'react-redux';
+import ProductDetailCardCommon from '../common/CardCommon/ProductDetailCardCommon';
 
 function ProductDetailModal({ ...props }) {
     const { onClose } = props;
