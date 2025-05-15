@@ -2,7 +2,8 @@
 /* eslint-disable no-unsafe-optional-chaining */
 import axiosInstancePrivate from '@/api/axiosInstance';
 import categoryDishesPrivate, {
-    getAllCategoriesDishesApi,
+    getAllCategoryDishesApi,
+    getCategoriesDishesPagesApi,
     getCategoryDishesSlugApi,
 } from '@/api/categoryDishesService';
 import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
@@ -19,11 +20,23 @@ const initialValues = {
     arrProductOriginal: [],
 };
 
-export const getAllCategoriesDishes = createAsyncThunk(
-    '/category-dishes/get-all-category-dishes',
+export const getAllCategoriesDishesPages = createAsyncThunk(
+    '/category-dishes/get-all-category-dishes-page',
     async (page) => {
         try {
-            const response = await getAllCategoriesDishesApi(page);
+            const response = await getCategoriesDishesPagesApi(page);
+            return response;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+);
+
+export const getAllCategoriesDishes = createAsyncThunk(
+    '/category-dishes/get-all-category-dishes',
+    async () => {
+        try {
+            const response = await getAllCategoryDishesApi();
             return response;
         } catch (error) {
             console.error(error);
@@ -33,9 +46,9 @@ export const getAllCategoriesDishes = createAsyncThunk(
 
 export const getCategoryDishesSlug = createAsyncThunk(
     '/category-dishes/get-category-slug',
-    async (page) => {
+    async (slug) => {
         try {
-            const response = await getCategoryDishesSlugApi(page);
+            const response = await getCategoryDishesSlugApi(slug);
             return response;
         } catch (error) {
             console.error(error);
@@ -135,12 +148,24 @@ const categoryDishesSlice = createSlice({
     },
     extraReducers: (builder) => {
         builder
+            .addCase(getAllCategoriesDishesPages.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getAllCategoriesDishesPages.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.category_dishes = action.payload;
+            })
+            .addCase(getAllCategoriesDishesPages.rejected, (state) => {
+                state.isLoading = false;
+            })
+
+            //get all category dishes
             .addCase(getAllCategoriesDishes.pending, (state) => {
                 state.isLoading = true;
             })
             .addCase(getAllCategoriesDishes.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.category_dishes = action.payload;
+                state.category_dishes = action.payload.data;
             })
             .addCase(getAllCategoriesDishes.rejected, (state) => {
                 state.isLoading = false;

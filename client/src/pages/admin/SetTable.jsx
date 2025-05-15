@@ -1,5 +1,12 @@
+
+import { Outlet } from 'react-router';
+
 function SetTable() {
-    return <div></div>;
+    return (
+        <div>
+            <Outlet />
+        </div>
+    );
 }
 
 export default SetTable;

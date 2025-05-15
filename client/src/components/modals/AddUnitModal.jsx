@@ -55,7 +55,8 @@ function AddUnitModal({ isOpenModal, setIsOpenModal }) {
     });
 
     return (
-        <div className="fixed top-0 left-0 bottom-0 right-0 flex justify-center items-center bg-black bg-opacity-15 ">
+        <div className="fixed top-0 left-0 bottom-0 right-0 flex justify-center 
+                    items-center bg-black bg-opacity-15 font-cabin text-text-primary">
             <motion.div
                 initial={{ opacity: 0 }}
                 animate={

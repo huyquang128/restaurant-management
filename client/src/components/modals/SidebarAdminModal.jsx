@@ -6,10 +6,13 @@ import { motion } from 'framer-motion';
 import CategoryListContent from '../common/CategoryListContent';
 
 function SidebarAdminModal({ ...props }) {
-    const { isOpenrModal, isCloseModalAnimation, closeModal } = props;
+    const { isOpenrModal, isCloseModalAnimation, closeModal, type } = props;
 
     return (
-        <div className="fixed top-0 z-20 left-0 bottom-0 right-0 flex justify-start bg-black bg-opacity-30">
+        <div
+            className="fixed top-0 z-20 left-0 bottom-0 right-0 flex 
+                        justify-start bg-black bg-opacity-30 "
+        >
             <motion.div
                 initial={{ opacity: 0, x: '-100%' }}
                 animate={
@@ -18,10 +21,10 @@ function SidebarAdminModal({ ...props }) {
                         : { opacity: 0, x: '-100%' }
                 }
                 transition={{ duration: 0.3 }}
-                className=" w-80 min-h-screen flex gap-1 "
+                className=" w-80 h-full flex gap-1 "
             >
-                <div className="bg-bg-tertiary flex-1 shadow-header-shadow">
-                    <CategoryListContent closeModal={closeModal} />
+                <div className="bg-bg-secondary flex-1 shadow-header-shadow overflow-y-scroll">
+                    <CategoryListContent closeModal={closeModal} type={type} />
                 </div>
 
                 <FontAwesomeIcon

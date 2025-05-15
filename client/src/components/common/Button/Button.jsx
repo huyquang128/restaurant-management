@@ -5,6 +5,7 @@ import { motion } from 'framer-motion';
 function Button({ ...props }) {
     const { icon, title, bg, no_rounded, handleClick, type, color_ring } =
         props;
+
     const [isHoverBtn, setIsHoverBtn] = useState(false);
 
     return (
@@ -21,14 +22,15 @@ function Button({ ...props }) {
                 (bg === 'add' && 'bg-black') ||
                 (bg === 'exit' && 'bg-blue-700') ||
                 (bg === 'delete' && 'bg-red-600') ||
+                (bg === 'white' && 'bg-white') ||
                 (bg === 'blue' && 'bg-blue-700')
             } 
             ${no_rounded ? 'rounded-none' : 'rounded-[4px]'} 
             w-full justify-center overflow-hidden`}
         >
             {/* Icon và Text đảm bảo luôn trên cùng */}
-            {icon && <img src={icon} alt="" className="relative z-20" />}
-            <span className={` text-white relative z-20`}>
+            {icon && <img src={icon} alt="" className="relative z-20 h-5" />}
+            <span className={` text-white relative z-20 text-sm`}>
                 {color_ring ? ColorRingAnimation() : title}
             </span>
 
@@ -40,6 +42,7 @@ function Button({ ...props }) {
                     (bg === 'import' && 'bg-green-500') ||
                     (bg === 'export' && 'bg-green-500') ||
                     (bg === 'delete' && 'bg-red-500') ||
+                    (bg === 'white' && 'bg-red-500') ||
                     (bg === 'exit' && 'bg-blue-500 ') ||
                     (bg === 'blue' && 'bg-blue-700')
                 }`}
@@ -48,7 +51,7 @@ function Button({ ...props }) {
                 }}
                 initial={{ x: '-120%' }}
                 animate={isHoverBtn ? { x: '0%' } : { x: '-120%' }}
-                transition={{ duration: 0.4, ease: 'easeInOut' }}
+                transition={{ duration: 0.5, ease: 'easeInOut' }}
             ></motion.div>
         </button>
     );

@@ -9,9 +9,11 @@ import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
 
 const initialState = {
     isLoading: false,
+    isRefreshingToken: false,
     isAuthenticated: false,
     accessToken: null,
     theme: 'light',
+    user: null,
 };
 
 export const register = createAsyncThunk('/auth/register', async (formData) => {
@@ -23,14 +25,17 @@ export const register = createAsyncThunk('/auth/register', async (formData) => {
     }
 });
 
-export const login = createAsyncThunk('/auth/login', async (formData) => {
-    try {
-        const response = await loginApi(formData);
-        return response;
-    } catch (error) {
-        throw new Error(error.message);
+export const login = createAsyncThunk(
+    '/auth/login',
+    async (formData, { rejectWithValue }) => {
+        try {
+            const response = await loginApi(formData);
+            return response;
+        } catch (error) {
+            return rejectWithValue(error.response?.data || error.message);
+        }
     }
-});
+);
 
 export const logout = createAsyncThunk('/auth/logout', async () => {
     try {
@@ -43,12 +48,12 @@ export const logout = createAsyncThunk('/auth/logout', async () => {
 
 export const refreshToken = createAsyncThunk(
     '/auth/refresh-token',
-    async () => {
+    async (_, { rejectWithValue }) => {
         try {
             const response = await refreshTokenApi();
             return response;
         } catch (error) {
-            throw new Error(error.message);
+            return rejectWithValue(error.response?.data || error.message);
         }
     }
 );
@@ -84,21 +89,23 @@ const authSlice = createSlice({
                 state.isLoading = false;
                 state.isAuthenticated = true;
                 state.accessToken = action.payload?.accessToken;
+                state.user = action.payload?.user;
             })
             .addCase(login.rejected, (state) => {
                 state.isLoading = false;
                 state.isAuthenticated = false;
             })
             .addCase(refreshToken.pending, (state) => {
-                state.isLoading = true;
+                state.isRefreshingToken = true;
             })
             .addCase(refreshToken.fulfilled, (state, action) => {
-                state.isLoading = false;
+                state.isRefreshingToken = false;
                 state.isAuthenticated = true;
                 state.accessToken = action.payload?.accessToken;
+                state.user = action.payload?.user;
             })
             .addCase(refreshToken.rejected, (state) => {
-                state.isLoading = false;
+                state.isRefreshingToken = false;
                 state.isAuthenticated = false;
             })
             .addCase(logout.fulfilled, (state) => {

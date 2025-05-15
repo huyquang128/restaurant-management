@@ -17,7 +17,7 @@ function UserTooltip() {
                     status: 'success',
                     msg: data.payload?.message,
                 });
-                navigate('/');
+                navigate('/login');
             }
         });
     };

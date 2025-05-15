@@ -2,12 +2,16 @@
 import { Link } from 'react-router';
 import CapitalizeFirstLetter from '@/components/common/CapitalizeFirstLetter';
 import FormatVND from '@/components/common/FormatVnd';
-import PaginationCommon from '@/components/common/PaginationCommon';
+import PaginationCommon from '@/components/common/Pagination/PaginationCommon.jsx';
 import BlockRemoveCommon from '@/components/common/BlockRemoveCommon';
 import avatar_default_dishes from '@/assets/icon/avatar_default_dishes.svg';
 import RotatingLinesCommon from '@/components/common/spinnerAnimation/RotatingLinesCommon';
 import useCheckboxDelete from '../hooks/useCheckboxDelete.jsx.jsx';
 import formatDate from '../common/formatDate.jsx';
+import email from '@/assets/icon/email.svg';
+import calendar_2 from '@/assets/icon/calendar_2.svg';
+import phone from '@/assets/icon/phone.svg';
+import { useSelector } from 'react-redux';
 
 function BlockListItemCommon({ ...props }) {
     const {
@@ -40,6 +44,8 @@ function BlockListItemCommon({ ...props }) {
         handleActiveItem,
     } = useCheckboxDelete(arr);
 
+    const authStore = useSelector((state) => state.auth);
+
     return (
         <div>
             {/* act remove product selected */}
@@ -62,7 +68,14 @@ function BlockListItemCommon({ ...props }) {
 
             <div>
                 {/* list category */}
-                <div className="grid grid-cols-12 items-center">
+                <div
+                    className={`grid grid-cols-12 items-center 
+                            ${
+                                (type === 'menus-admin' &&
+                                    'bg-yellow-primary') ||
+                                (type === 'customer-admin' && 'bg-blue-primary')
+                            } py-3 rounded-lg`}
+                >
                     <input
                         type="checkbox"
                         name=""
@@ -74,21 +87,36 @@ function BlockListItemCommon({ ...props }) {
                     {arrCategory.map((item, index) => (
                         <div
                             key={index}
-                            className={`text-text-primary  ${
+                            className={`text-white ${
                                 (type === 'menus-admin' &&
                                     index === 0 &&
                                     'col-span-3 text-start') ||
+                                (type === 'customer-admin' &&
+                                    index === 0 &&
+                                    'col-span-2 text-start') ||
                                 (index === 0 && 'col-span-3 text-start') ||
                                 (type === 'menus-admin' &&
                                     index === 1 &&
-                                    'col-span-3 text-center') ||
-                                (index === 1 && 'col-span-2 text-center') ||
+                                    'col-span-4 text-center') ||
+                                (type === 'customer-admin' &&
+                                    index === 1 &&
+                                    'col-span-3 ') ||
+                                (index === 1 && 'col-span-3 text-center') ||
                                 (type === 'menus-admin' &&
                                     index === 2 &&
-                                    'col-span-3 text-center') ||
-                                (index === 2 && 'col-span-2 text-center') ||
+                                    'col-span-4 text-center') ||
+                                (type === 'customer-admin' &&
+                                    index === 2 &&
+                                    'col-span-2') ||
+                                (index === 2 && 'col-span-3 text-center') ||
+                                (type === 'customer-admin' &&
+                                    index === 3 &&
+                                    'col-span-2 ') ||
                                 (index === 3 && 'col-span-2  text-center') ||
-                                (index === 4 && 'col-span-2') ||
+                                (type === 'customer-admin' &&
+                                    index === 4 &&
+                                    'col-span-2 text-center') ||
+                                (index === 4 && 'col-span-2 text-center') ||
                                 'col-span-2'
                             }`}
                         >
@@ -103,12 +131,16 @@ function BlockListItemCommon({ ...props }) {
                         <RotatingLinesCommon />
                     </div>
                 ) : (
-                    <div className={`${arr?.length < 8 ? 'mb-40' : ''}`}>
+                    <div
+                        className={`${
+                            arr?.length < 8 ? 'mb-40' : ''
+                        } bg-bg-secondary rounded-lg`}
+                    >
                         {arr?.map((item, index) => (
                             <div
                                 onClick={() => handleActiveItem(item._id)}
                                 key={index}
-                                className={`grid grid-cols-12 bg-bg-tertiary text-text-primary my-3 py-2
+                                className={`grid grid-cols-12  text-text-primary my-3 py-5
                                         rounded-lg items-center cursor-pointer hover:bg-color-active 
                                         ${
                                             arrActive.includes(item._id)
@@ -125,9 +157,16 @@ function BlockListItemCommon({ ...props }) {
                                     readOnly
                                 />
 
-                                <div className="col-span-3 hover:text-yellow-primary">
+                                <div
+                                    className={`${
+                                        type === 'customer-admin'
+                                            ? 'col-span-2'
+                                            : 'col-span-3'
+                                    } hover:text-yellow-primary`}
+                                >
                                     <div className="flex items-center gap-2">
-                                        {type === 'menus-admin' ? (
+                                        {type === 'menus-admin' ||
+                                        type === 'customer-admin' ? (
                                             ''
                                         ) : (
                                             <img
@@ -145,40 +184,94 @@ function BlockListItemCommon({ ...props }) {
                                             />
                                         )}
                                         <Link
-                                            to={`${linkToDetailItem}/${item.slug}`}
+                                            to={`${linkToDetailItem}/${
+                                                type === 'customer-admin'
+                                                    ? item.username
+                                                    : item.slug
+                                            }`}
                                         >
                                             <span className="">
                                                 {CapitalizeFirstLetter(
-                                                    item.name
+                                                    type === 'customer-admin'
+                                                        ? item.username
+                                                        : item.name
                                                 )}
                                             </span>
                                         </Link>
                                     </div>
                                 </div>
-                                {type === 'menus-admin' ? (
+                                {(type === 'menus-admin' && (
                                     <>
-                                        <div className="col-span-3 text-center">
-                                            {item.products.length}
-                                        </div>
-                                        <div className="col-span-3 text-center">
-                                            {formatDate(item.created_at)}
+                                        {item.products ? (
+                                            <div className="col-span-4 text-center">
+                                                {item.products.length}{' '}
+                                            </div>
+                                        ) : (
+                                            <div>
+                                                <img
+                                                    src={item.urlImg.url}
+                                                    alt=""
+                                                />
+                                            </div>
+                                        )}
+
+                                        <div className="col-span-4 text-center">
+                                            {item.created_at
+                                                ? formatDate(item.created_at)
+                                                : item.order}
                                         </div>
                                     </>
-                                ) : (
-                                    <>
-                                        <div className="col-span-2 text-center">
-                                            {FormatVND(item.selling)}
-                                        </div>
-                                        <div className="col-span-2 text-center">
-                                            {CapitalizeFirstLetter(
-                                                item.unit?.name
-                                            )}
-                                        </div>
-                                        <div className="col-span-2 text-center">
-                                            {item.quantity}
-                                        </div>
-                                    </>
-                                )}
+                                )) ||
+                                    (type === 'customer-admin' && (
+                                        <>
+                                            <div
+                                                className="col-span-3 text-center flex items-center 
+                                                            justify-start gap-2"
+                                            >
+                                                <img src={email} alt="" />
+                                                <span> {item.email}</span>
+                                            </div>
+                                            <div className="col-span-2">
+                                                {item.name || '---'}
+                                            </div>
+                                            <div
+                                                className="col-span-2 text-center flex items-center 
+                                                            justify-start gap-2"
+                                            >
+                                                <div className="">
+                                                    <img
+                                                        src={calendar_2}
+                                                        alt=""
+                                                    />
+                                                </div>
+                                                <span> {'dd/mm/yy'}</span>
+                                            </div>{' '}
+                                            <div
+                                                className="col-span-2 text-center flex items-center 
+                                                            justify-center "
+                                            >
+                                                <img
+                                                    src={phone}
+                                                    alt=""
+                                                    className="h-5"
+                                                />
+                                                <span className="w-24">
+                                                    {item.phone || '---------'}
+                                                </span>
+                                            </div>
+                                        </>
+                                    )) || (
+                                        <>
+                                            <div className="col-span-3 text-center">
+                                                {FormatVND(item.selling)}
+                                            </div>
+                                            <div className="col-span-3 text-center">
+                                                {CapitalizeFirstLetter(
+                                                    item.unit?.name
+                                                )}
+                                            </div>
+                                        </>
+                                    )}
                             </div>
                         ))}
                     </div>
@@ -186,7 +279,7 @@ function BlockListItemCommon({ ...props }) {
             </div>
 
             {/* pagination */}
-            <div className="mt-10">
+            <div className="mt-10 flex justify-end">
                 <PaginationCommon
                     totalProducts={totalProducts}
                     getPageFunc={getPageFunc}

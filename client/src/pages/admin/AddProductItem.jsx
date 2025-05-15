@@ -8,7 +8,6 @@ import * as Yup from 'yup';
 import SelectOptCommon from '@/components/common/SelectOptCommon';
 import Button from '@/components/common/Button/Button';
 import { useEffect, useState } from 'react';
-import avatar_default_dishes from '@/assets/icon/avatar_default_dishes.svg';
 import lau from '@/assets/icon/lau.svg';
 import AddCategoryModal from '@/components/modals/AddCategoryModal';
 import AddUnitModal from '@/components/modals/AddUnitModal';
@@ -25,6 +24,7 @@ import {
     setFormProductValue,
     setUrlImgProduct,
     updateProduct,
+    setImgSelectedRemoved,
 } from '@/redux/productSlice';
 import TextAreaCommon from '@/components/common/TextAreaCommon';
 import ToastMsg from '@/components/common/ToastMsg';
@@ -44,7 +44,6 @@ function AddProductItem() {
     const [isShowBlockRemove, setIsShowBlockRemove] = useState(false);
     const [fileImgUploadNew, setFileImgUploadNew] = useState([]);
 
-    const categoryDishesStore = useSelector((state) => state.categoryDishes);
     const unitStore = useSelector((state) => state.unit);
     const authStore = useSelector((state) => state.auth);
     const productStore = useSelector((state) => state.product);
@@ -126,9 +125,7 @@ function AddProductItem() {
                 'Tên mặt hàng không được để trống'
             ),
             unit: Yup.string().required('Đơn vị không được để trống'),
-            quantity: Yup.number()
-                .min(0, 'Giá phải lớn hơn 0')
-                .required('Số lượng không được để trống'),
+
             promotion: Yup.number()
                 .min(0, 'Giá phải lớn hơn 0')
                 .required('Giá khuyến mãi không được để trống'),
@@ -155,9 +152,7 @@ function AddProductItem() {
             slug &&
                 formData.append(
                     'images',
-                    JSON.stringify(
-                        productStore.urlImgProducts.filter((img) => img._id)
-                    )
+                    JSON.stringify(productStore.arrImgRemoveTemp)
                 );
 
             fileImgUploadNew.map((img) => {
@@ -232,9 +227,10 @@ function AddProductItem() {
         }, 500);
     };
 
-    const handleClickSelectedImg = (indexImg) => {
+    const handleClickSelectedImg = (indexImg, item) => {
         setIsShowBlockRemove(true);
         dispatch(setImgSelected(indexImg));
+        dispatch(setImgSelectedRemoved(item._id));
     };
 
     const removeFileImgUploadNew = (arrImgSelected) => {
@@ -349,13 +345,14 @@ function AddProductItem() {
                             Chọn ảnh chất lượng cao để hiển thị rõ ràng hơn.
                         </div>
                     )}
+
                     <div className="flex gap-5 flex-wrap justify-center items-center mt-5 ">
                         {productStore.urlImgProducts?.length > 0 &&
                             productStore.urlImgProducts.map((item, index) => (
                                 <div
                                     key={index}
                                     onClick={() =>
-                                        handleClickSelectedImg(index)
+                                        handleClickSelectedImg(index, item)
                                     }
                                     className={`flex justify-center cursor-pointer`}
                                 >
@@ -417,7 +414,7 @@ function AddProductItem() {
                         />
                     </div>
 
-                    <div className="max-sm:col-span-2">
+                    <div className="col-span-2">
                         <TextAreaCommon
                             id="description"
                             label="Mô tả sản phẩm"

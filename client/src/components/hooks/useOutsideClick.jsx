@@ -6,7 +6,7 @@ function useOutsideClick(onOutsideClick) {
     useEffect(() => {
         const handleClick = (event) => {
             if (ref.current || ref.current.contains(event.target)) {
-                onOutsideClick();
+                onOutsideClick(null);
             }
         };
 

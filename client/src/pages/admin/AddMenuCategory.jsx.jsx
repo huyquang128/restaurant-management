@@ -25,11 +25,14 @@ import AddProductMenuAdminModal from '@/components/modals/AddProductMenuAdminMod
 import {
     deleteProductSelectedInCategory,
     getAllProducts,
+    searchProductNameNoPage,
     setProductSelectedInCategory,
 } from '@/redux/productSlice';
 import CapitalizeFirstLetter from '@/components/common/CapitalizeFirstLetter';
 import FormatVND from '@/components/common/FormatVND';
 import ConfirmRemoveModal from '@/components/modals/ConfirmRemoveModal';
+
+import { setProductSelectedCategory } from '@/redux/categoryDishesSlice';
 
 const categories = [
     { name: 'Mặt hàng' },
@@ -53,6 +56,7 @@ function AddMenuCategory() {
     const categoryDishesStore = useSelector((state) => state.categoryDishes);
     const authStore = useSelector((state) => state.auth);
     const productStore = useSelector((state) => state.product);
+
     const [productIdSelected, setProductIdSelected] = useState(null);
     const [productIdOldRemoveUpload, setProductIdOldRemoveUpload] = useState(
         []
@@ -61,7 +65,12 @@ function AddMenuCategory() {
     useEffect(() => {
         dispatch(getAllProducts());
         if (slug) {
-            dispatch(getCategoryDishesSlug(slug));
+            dispatch(getCategoryDishesSlug(slug)).then(data => {
+                if(data.payload.success) {
+                    console.log(data.payload.data)
+                    setArrProductIdSelected([...data.payload.data.products])
+                }
+            });
         } else {
             dispatch(resetForm());
         }
@@ -85,40 +94,6 @@ function AddMenuCategory() {
                 )
             );
     }, [categoryDishesStore.category_dishes?.products]);
-
-    // useEffect(() => {
-    //     if (productStore.urlImgProducts.length > 0 && !isStatusSaveProduct) {
-    //         const imageIds = productStore.urlImgProducts.map(
-    //             (img) => img.imageId
-    //         );
-    //         dispatch(deleteImage(imageIds));
-    //     }
-    // }, [dispatch, isStatusSaveProduct]);
-
-    // useEffect(() => {
-    //     const handleDeleteImageBeforeReload = () => {
-    //         if (
-    //             productStore.urlImgProducts.length > 0 &&
-    //             !isStatusSaveProduct
-    //         ) {
-    //             const imageIds = productStore.urlImgProducts.map(
-    //                 (img) => img.imageId
-    //             );
-    //             dispatch(deleteImage(imageIds));
-    //         }
-    //     };
-
-    //     window.addEventListener('beforeunload', handleDeleteImageBeforeReload);
-
-    //     return () => {
-    //         window.removeEventListener(
-    //             'beforeunload',
-    //             handleDeleteImageBeforeReload
-    //         );
-    //     };
-    // }, [productStore.urlImgProducts]);
-
-    // validate form
 
     const formik = useFormik({
         initialValues: {
@@ -201,10 +176,10 @@ function AddMenuCategory() {
                                 </div>
                             </div>
                             <div className="col-span-4">
-                                {FormatVND(item.selling)}
+                                {FormatVND(item.promotion || item.selling)}
                             </div>
                             <div className="col-span-2 text-center">
-                                {item.unit.name}
+                                {item.unit?.name || ''}
                             </div>
                             <div
                                 onClick={() => (
@@ -339,7 +314,6 @@ function AddMenuCategory() {
                                 title={slug ? 'cập nhật' : 'Lưu'}
                                 bg="save"
                                 type="submit"
-                                icon={save_white}
                                 color_ring={productStore.isLoading}
                             />
                         </div>
@@ -353,6 +327,9 @@ function AddMenuCategory() {
                         setIsOpenModal={setIsOpenModalAddProduct}
                         arrProductIdSelected={arrProductIdSelected}
                         setArrProductIdSelected={setArrProductIdSelected}
+                        setProductSelected={setProductSelectedCategory}
+                        searchProductNameNoPage={searchProductNameNoPage}
+                        setProductSelectedIn={setProductSelectedInCategory}
                     />
                 )}
 

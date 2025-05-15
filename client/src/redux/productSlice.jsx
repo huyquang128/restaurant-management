@@ -3,6 +3,7 @@ import productServicePrivate, {
     getAllProductsApi,
     getAllProductsPageApi,
     getProductBySlugApi,
+    getProductSoldApi,
     getProductsPageByCategoryApi,
     searchNameProductApi,
     searchNameProductNoPageApi,
@@ -14,6 +15,7 @@ const initialState = {
     isLoadingSearch: false,
     error: null,
     products: null,
+    productSold: null,
     formProductValue: {
         nameProduct: '',
         unit: '',
@@ -30,6 +32,10 @@ const initialState = {
     arrImgRemoveTemp: [],
     productsSearch: [],
     productSelectedInCategoryAdd: [],
+    productSelectedInComboAdd: [],
+    valueSortDishes: 'asc',
+    productSelected: null,
+    starArrEvaluated: [],
 };
 
 export const getAllProductPages = createAsyncThunk(
@@ -56,11 +62,23 @@ export const getAllProducts = createAsyncThunk(
     }
 );
 
+export const getProductSold = createAsyncThunk(
+    '/product/get-product-sold',
+    async () => {
+        try {
+            const response = await getProductSoldApi();
+            return response;
+        } catch (error) {
+            console.error(error);
+        }
+    }
+);
+
 export const getProductsPageByCategory = createAsyncThunk(
     '/product/get-products-page-by-category',
-    async (id) => {
+    async ({ id, pageNumber }) => {
         try {
-            const response = await getProductsPageByCategoryApi(id);
+            const response = await getProductsPageByCategoryApi(id, pageNumber);
             return response;
         } catch (error) {
             console.error(error);
@@ -164,6 +182,7 @@ const productSlice = createSlice({
             state.urlImgProducts = [action.payload, ...state.urlImgProducts];
         },
         deleteImgProduct: (state, action) => {
+            console.log('action.payload: ', action.payload);
             state.urlImgProducts = state.urlImgProducts.filter(
                 (img, index) => !action.payload.includes(index)
             );
@@ -173,6 +192,15 @@ const productSlice = createSlice({
             state.arrImgSelected = state.arrImgSelected.includes(action.payload)
                 ? state.arrImgSelected.filter((img) => img !== action.payload)
                 : [action.payload, ...state.arrImgSelected];
+        },
+        setImgSelectedRemoved: (state, action) => {
+            state.arrImgRemoveTemp = state.arrImgRemoveTemp.includes(
+                action.payload
+            )
+                ? state.arrImgRemoveTemp.filter(
+                      (item) => item !== action.payload
+                  )
+                : [action.payload, ...state.arrImgRemoveTemp];
         },
         resetUrlImgProduct: (state) => {
             state.urlImgProducts = [];
@@ -185,11 +213,29 @@ const productSlice = createSlice({
         setProductSelectedInCategory: (state, action) => {
             state.productSelectedInCategoryAdd = action.payload;
         },
+
         deleteProductSelectedInCategory: (state, action) => {
             state.productSelectedInCategoryAdd =
                 state.productSelectedInCategoryAdd.filter(
                     (item) => item._id !== action.payload
                 );
+        },
+
+        //
+        // setProductSelectedInCombo: (state, action) => {
+        //     state.productSelectedInComboAdd = action.payload;
+        // },
+        // deleteProductSelectedInCombo: (state, action) => {
+        //     state.productSelectedInComboAdd =
+        //         state.productSelectedInComboAdd.filter(
+        //             (item) => item._id !== action.payload
+        //         );
+        // },
+        setValueSortDishes: (state, action) => {
+            state.valueSortDishes = action.payload;
+        },
+        setProductSeleted: (state, action) => {
+            state.productSelected = action.payload;
         },
     },
     extraReducers: (builder) => {
@@ -230,7 +276,7 @@ const productSlice = createSlice({
             })
             .addCase(getProductsPageByCategory.fulfilled, (state, action) => {
                 state.isLoading = false;
-                state.products = action.payload.data;
+                state.products = action.payload;
                 state.error = null;
             })
             .addCase(getProductsPageByCategory.rejected, (state, action) => {
@@ -255,6 +301,7 @@ const productSlice = createSlice({
                     description: action.payload?.data?.description,
                     cost: action.payload?.data?.cost,
                 };
+                state.productSelected = action.payload?.data;
                 state.urlImgProducts = action.payload?.success && [
                     ...action.payload.data.images,
                 ];
@@ -336,6 +383,17 @@ const productSlice = createSlice({
             .addCase(searchProductNameNoPage.rejected, (state, action) => {
                 state.isLoadingSearch = false;
                 state.error = action.payload;
+            })
+
+            .addCase(getProductSold.pending, (state) => {
+                state.isLoadingSearch = true;
+            })
+            .addCase(getProductSold.fulfilled, (state, action) => {
+                state.isLoadingSearch = false;
+                state.productSold = action.payload.data;
+            })
+            .addCase(getProductSold.rejected, (state) => {
+                state.isLoadingSearch = false;
             });
     },
 });
@@ -349,5 +407,10 @@ export const {
     setImgSelected,
     setProductSelectedInCategory,
     deleteProductSelectedInCategory,
+    deleteProductSelectedInCombo,
+    setProductSelectedInCombo,
+    setValueSortDishes,
+    setProductSeleted,
+    setImgSelectedRemoved,
 } = productSlice.actions;
 export default productSlice.reducer;

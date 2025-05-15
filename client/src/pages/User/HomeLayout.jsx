@@ -1,40 +1,35 @@
-import Banner from '@/components/user/Banner';
+import { useEffect, useRef, useState } from 'react';
+import Footer from '@/components/user/Footer';
+import { useDispatch, useSelector } from 'react-redux';
+import { AnimatePresence, motion } from 'framer-motion';
+import { Outlet } from 'react-router';
+
 import Header from '@/components/user/Header';
 import TopHeder from '@/components/user/TopHeder';
-import WelcomeSection from '@/components/user/WelcomeSection';
-import { Outlet } from 'react-router';
 import banner_1 from '@/assets/image/banner_1.jpg';
-import banner_2 from '@/assets/image/banner_2.webp';
 import banner_3 from '@/assets/image/banner_3.jpg';
-import useScrollHandling from '@/components/hooks/useScrollHandling';
-import { useEffect, useRef, useState } from 'react';
-import SpecialDishes from '@/components/user/SpecialDishes';
-import DiscoverMenu from '@/components/user/DiscoverMenu';
-import RestaurantGallery from '@/components/user/RestaurantGallery';
-import ClientFeedback from '@/components/user/ClientFeedback';
-import SectionMakeReservation from '@/components/user/SectionMakeReservation';
-import Footer from '@/components/user/Footer';
+import banner_2 from '@/assets/image/banner_2.webp';
 import CopyrightFooter from '@/components/user/CopyrightFooter';
-import { useSelector } from 'react-redux';
-import { motion } from 'framer-motion';
-import SloganTop from '@/components/user/SloganTop';
-import SloganBot from '@/components/user/SloganBot';
-import SloganCenter from '@/components/user/SloganCenter';
-import SectionMap from '@/components/user/SectionMap';
+import useScrollHandling from '@/components/hooks/useScrollHandling';
+import ModalManager from '@/components/ModalManager';
+import { getAllSlide } from '@/redux/slideShowSlice';
 
 const arrListImage = [{ src: banner_2 }, { src: banner_1 }, { src: banner_3 }];
 
 function HomeLayout() {
-    //
+    const dispatch = useDispatch();
     const currentImgIndex = useSelector((state) => state.user?.currentImgIndex);
+    const slideStore = useSelector((state) => state.slide);
 
-    //
     const [fixedPosition, setFixedPosition] = useState(false);
     let positionTranslate = useRef(0);
 
     const { scrollPosition } = useScrollHandling();
 
-    //
+    useEffect(() => {
+        dispatch(getAllSlide());
+    }, [dispatch]);
+
     useEffect(() => {
         if (scrollPosition > 44) {
             setFixedPosition(true);
@@ -47,30 +42,30 @@ function HomeLayout() {
 
     return (
         <div className="relative ">
-            {arrListImage.map((item, index) => (
-                <motion.div
-                    initial={{ scale: '100%' }}
-                    animate={
-                        currentImgIndex === index
-                            ? { scale: '125%' }
-                            : { scale: '100%' }
-                    }
-                    transition={{ duration: 2 }}
-                    key={index}
-                    className="fixed top-0 flex flex-col w-full h-full"
-                >
+            {slideStore.slide?.map((item, index) => (
+                <AnimatePresence key={index}>
                     {currentImgIndex === index && (
-                        <img
-                            src={item.src}
-                            alt=""
-                            className={`w-full h-full object-cover brightness-75 ${
-                                fixedPosition
-                                    ? `translate-y-[${positionTranslate}px]`
-                                    : ''
-                            }`}
-                        />
+                        <motion.div
+                            key={index}
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            transition={{ duration: 1.5 }}
+                            className="fixed top-0 flex flex-col w-full h-full z-10"
+                        >
+                            <motion.img
+                                transition={{ duration: 1.5 }}
+                                src={item.urlImg.url}
+                                alt=""
+                                className={`w-full h-full object-cover brightness-50 ${
+                                    fixedPosition
+                                        ? `translate-y-[${positionTranslate}px]`
+                                        : ''
+                                }`}
+                            />
+                        </motion.div>
                     )}
-                </motion.div>
+                </AnimatePresence>
             ))}
 
             <TopHeder />
@@ -80,6 +75,7 @@ function HomeLayout() {
                 <Footer />
                 <CopyrightFooter />
             </div>
+            <ModalManager />
         </div>
     );
 }

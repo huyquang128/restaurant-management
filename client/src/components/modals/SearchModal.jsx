@@ -47,7 +47,7 @@ function SearchModal({ ...props }) {
 
     return (
         <div
-            className="fixed z-30 top-0 bottom-0 right-0 left-0 bg-black bg-opacity-35
+            className="fixed z-50 top-0 bottom-0 right-0 left-0 bg-black bg-opacity-35
                     "
         >
             <motion.div
@@ -105,7 +105,7 @@ function SearchModal({ ...props }) {
                                                     </span>
                                                 </div>
                                             </div>
-                                            <div className="h-20 w-16 overflow-hidden rounded-lg ">
+                                            <div className="h-20 w-16 overflow-hidden rounded-lg  border-border-primary">
                                                 <img
                                                     src={item.images[0]?.url}
                                                     alt=""

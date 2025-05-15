@@ -3,6 +3,7 @@ import { Link } from 'react-router';
 import TooltipCommon from './TooltipCommon';
 import banner_1 from '@/assets/image/banner_1.jpg';
 import UserTooltip from '../tooltipsContent/UserTooltip';
+import CapitalizeFirstLetter from './CapitalizeFirstLetter';
 
 function AvatarCommon({
     isOpenTooltipUser,
@@ -26,8 +27,18 @@ function AvatarCommon({
                         type === 'admin' ? '' : 'max-md:hidden'
                     }`}
                 >
+                    {type === 'admin' && (
+                        <div className="flex gap-2 items-center ">
+                            <span className="opacity-70">Xin chào, </span>
+                            <div className="max-md:hidden line-clamp-1 font-semibold">
+                                {CapitalizeFirstLetter(
+                                    userStore?.user?.username || ''
+                                )}
+                            </div>
+                        </div>
+                    )}
                     <div
-                        className="h-8 w-8 rounded-full bg-black flex justify-center items-center
+                        className="h-10 w-10 rounded-full bg-black flex justify-center items-center
                             overflow-hidden border"
                     >
                         <img
@@ -36,9 +47,12 @@ function AvatarCommon({
                             className="object-cover w-full h-full"
                         />
                     </div>
-                    <div className="max-md:hidden line-clamp-1">
-                        {userStore?.user?.username}
-                    </div>
+                    {type !== 'admin' && (
+                        <div className="max-md:hidden line-clamp-1">
+                            {userStore?.user?.username}
+                        </div>
+                    )}
+
                     {isOpenTooltipUser && (
                         <TooltipCommon
                             isOpenTooltip={isOpenTooltipUser}

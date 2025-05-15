@@ -21,7 +21,7 @@ function SelectOptCommon({ label, setisopenmodal, ...props }) {
                     onBlur={formik.handleBlur}
                     onChange={formik.handleChange}
                     value={formik.values[id]}
-                    className={`py-3 px-4 bg-bg-tertiary w-full rounded-lg text-text-primary 
+                    className={`py-3 px-4 bg-bg-secondary w-full rounded-lg text-text-primary 
                             transition-all outline outline-1  border-none ease-linear duration-200 
                             appearance-none focus:outline-yellow-primary cursor-pointer
                             ${
@@ -32,7 +32,11 @@ function SelectOptCommon({ label, setisopenmodal, ...props }) {
                 >
                     <option value="">--{label}-- </option>
                     {list_opt?.map((item, index) => (
-                        <option key={index} value={item._id}>
+                        <option
+                            key={index}
+                            value={item._id}
+                            className="flex justify-between"
+                        >
                             {CapitalizeFirstLetter(item.name)}
                         </option>
                     ))}

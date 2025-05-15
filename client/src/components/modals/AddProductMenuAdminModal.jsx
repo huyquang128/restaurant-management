@@ -13,11 +13,6 @@ import FormatVND from '../common/FormatVND';
 import CapitalizeFirstLetter from '../common/CapitalizeFirstLetter';
 import ToastMsg from '../common/ToastMsg';
 import { debounce } from 'lodash';
-import {
-    searchProductNameNoPage,
-    setProductSelectedInCategory,
-} from '@/redux/productSlice';
-import { setProductSelectedCategory } from '@/redux/categoryDishesSlice';
 
 function AddProductMenuAdminModal({ ...props }) {
     const {
@@ -25,7 +20,12 @@ function AddProductMenuAdminModal({ ...props }) {
         setIsOpenModal,
         arrProductIdSelected,
         setArrProductIdSelected,
+        setProductSelected,
+        searchProductNameNoPage,
+        setProductSelectedIn,
     } = props;
+        console.log("🚀 ~ AddProductMenuAdminModal ~ arrProductIdSelected:", arrProductIdSelected)
+
     const dispatch = useDispatch();
     const productStore = useSelector((state) => state.product);
 
@@ -67,8 +67,8 @@ function AddProductMenuAdminModal({ ...props }) {
             ? ToastMsg({ msg: 'Bạn chưa chọn món ăn nào.', status: 'error' })
             : (closeModal(),
               dispatch(
-                  setProductSelectedInCategory(arrProductIdSelected),
-                  dispatch(setProductSelectedCategory(arrProductIdSelected))
+                  setProductSelectedIn(arrProductIdSelected),
+                  dispatch(setProductSelected(arrProductIdSelected))
               ));
     };
 
@@ -120,7 +120,7 @@ function AddProductMenuAdminModal({ ...props }) {
                     {FormatVND(item.selling)}
                 </div>
                 <div className="col-span-3 text-center max-xs:hidden">
-                    {CapitalizeFirstLetter(item.unit?.name)}
+                    {CapitalizeFirstLetter(item.unit?.name || '---')}
                 </div>
             </div>
         ));

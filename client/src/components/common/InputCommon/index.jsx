@@ -4,15 +4,15 @@ import hide_pass from '@/assets/icon/hide_pass.svg';
 import show_pass from '@/assets/icon/show_pass.svg';
 import { useState } from 'react';
 
-function InputCommon({ label, type, isRequired = false, ...props }) {
+function InputCommon({ label, type, no_label, isRequired = false, ...props }) {
     const { formik, id } = props;
     const [showPass, setShowPass] = useState(false);
     const isErr = formik.touched[id] && formik.errors[id];
     const errMsg = formik.errors[id];
 
     return (
-        <div  className="">
-            <div className="mb-2 text-text-primary">{label}</div>
+        <div className="">
+            {!no_label && <div className="mb-2 text-text-primary">{label}</div>}
             <div className={`transition-all`}>
                 <input
                     type={
@@ -22,7 +22,7 @@ function InputCommon({ label, type, isRequired = false, ...props }) {
                                 : 'password'
                             : type
                     }
-                    className={`w-full px-4 py-3 bg-bg-tertiary outline-1 outline focus:outline-yellow-primary
+                    className={`w-full px-4 py-3 bg-bg-secondary outline-1 outline focus:outline-yellow-primary
                         text-text-primary rounded-lg ease-linear duration-200 
                      relative
                         ${isErr ? 'outline-red-500' : 'outline-transparent'}`}

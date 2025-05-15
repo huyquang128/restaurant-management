@@ -1,5 +1,6 @@
 const mongoose = require('mongoose');
 const slugify = require('slugify');
+const removeVietnameseTonesCommon = require('../common/removeVietnameseTonesCommon');
 
 const categoryDishesSchema = new mongoose.Schema({
     name: { type: String, required: true },
@@ -10,10 +11,9 @@ const categoryDishesSchema = new mongoose.Schema({
 });
 
 //create slug
-
 categoryDishesSchema.pre('save', function (next) {
-    this.slug = slugify(this.name, { lower: true, strict: true });
-
+    const cleaned = removeVietnameseTonesCommon(this.name);
+    this.slug = slugify(cleaned, { lower: true, strict: true });
     next();
 });
 

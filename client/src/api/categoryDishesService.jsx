@@ -2,10 +2,10 @@ import ToastMsg from '@/components/common/ToastMsg';
 import { axiosInstancePublic } from './axiosInstance';
 
 // api public ( do not verify token)
-export const getAllCategoriesDishesApi = async (page) => {
+export const getCategoriesDishesPagesApi = async (page) => {
     try {
         const response = await axiosInstancePublic.get(
-            '/category-dishes/get-all-category-dishes',
+            '/category-dishes/get-all-category-dishes-page',
             {
                 params: {
                     page,
@@ -26,6 +26,21 @@ export const getCategoryDishesSlugApi = async (slug) => {
     try {
         const response = await axiosInstancePublic.get(
             `/category-dishes/get-category-slug/${slug}`
+        );
+        return response.data;
+    } catch (error) {
+        console.error(error);
+        ToastMsg({
+            status: 'error',
+            msg: error.response.data.message,
+        });
+    }
+};
+
+export const getAllCategoryDishesApi = async () => {
+    try {
+        const response = await axiosInstancePublic.get(
+            `/category-dishes/get-all-category-dishes/`
         );
         return response.data;
     } catch (error) {

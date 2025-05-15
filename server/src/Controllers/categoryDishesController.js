@@ -5,9 +5,13 @@ const Product = require('../Models/productModel');
 const getCategoryDishes = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     try {
-        const limit = 8;
+        const limit = 16;
         const skip = (page - 1) * limit;
         const categoryDishes = await CategoryDishes.find()
+            .populate({
+                path: 'products',
+                populate: { path: 'unit' },
+            })
             .skip(skip)
             .limit(limit)
             .sort({ _id: -1 });
@@ -29,6 +33,20 @@ const getCategoryDishes = async (req, res) => {
         res.status(500).json({
             success: false,
             message: 'An error occurred while getting category Dishes',
+        });
+    }
+};
+
+const getAllCategoriesDishes = async (req, res) => {
+    try {
+        const categoryDishes = await CategoryDishes.find().populate('products');
+
+        res.json({ success: true, data: categoryDishes });
+    } catch (error) {
+        console.log(error);
+        res.status(500).json({
+            success: false,
+            message: 'An error occurred while getting all categories Dishes',
         });
     }
 };
@@ -162,6 +180,7 @@ const updateCategoryDishes = async (req, res) => {
 
         findCategoryDishes.products = [...objecIdFilter, ...arrObjectIdNew];
         findCategoryDishes.name = name;
+
         await findCategoryDishes.save();
 
         return res.json({
@@ -216,4 +235,5 @@ module.exports = {
     updateCategoryDishes,
     deleteCategoryDishes,
     getCattegoryDishesSlug,
+    getAllCategoriesDishes,
 };

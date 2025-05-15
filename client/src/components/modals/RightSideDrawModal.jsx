@@ -25,7 +25,7 @@ function RightSideDrawModal({ isOpenModalMenu, setIsOpenModalMenu }) {
     };
 
     return (
-        <div className="fixed top-0 left-0 bottom-0 right-0 flex justify-end">
+        <div className="fixed top-0 z-50 left-0 bottom-0 right-0 flex justify-end bg-black bg-opacity-30">
             <motion.div
                 initial={{ opacity: 0, x: '100%' }}
                 animate={
@@ -34,7 +34,7 @@ function RightSideDrawModal({ isOpenModalMenu, setIsOpenModalMenu }) {
                         : { opacity: 0, x: '100%' }
                 }
                 transition={{ duration: 0.3 }}
-                className=" w-96 min-h-screen flex gap-1 "
+                className=" w-96 h-screen flex gap-1 "
             >
                 <FontAwesomeIcon
                     onClick={closeModal}

@@ -98,6 +98,15 @@ function AddCategoryModal({ isOpenModal, setIsOpenModal }) {
                     </div>
                 </form>
             </motion.div>
+
+            {/* modal */}
+            {isCloseModalSetTableNow && (
+                <SetTableNow
+                    isOpenModal={isOpenModalSetTableNow}
+                    isCloseModalSetTableNow={isCloseModalSetTableNow}
+                    closeModal={closeModalSetTableNow}
+                />
+            )}
         </div>
     );
 }

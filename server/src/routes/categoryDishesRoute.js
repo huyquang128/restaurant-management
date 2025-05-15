@@ -8,12 +8,14 @@ const {
     deleteCategoryDishes,
     updateCategoryDishes,
     getCattegoryDishesSlug,
+    getAllCategoriesDishes,
 } = require('../Controllers/categoryDishesController');
 const middlewareVerifyToken = require('../middleware/verifyToken');
 const { upload } = require('../Helper/cloudinary');
 
 // router public
-router.get('/get-all-category-dishes', getCategoryDishes);
+router.get('/get-all-category-dishes-page', getCategoryDishes);
+router.get('/get-all-category-dishes', getAllCategoriesDishes);
 router.get('/get-category-slug/:slug', getCattegoryDishesSlug);
 
 //route private

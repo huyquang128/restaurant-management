@@ -18,9 +18,14 @@ export const getAllProductsApi = async () => {
     return response.data;
 };
 
-export const getProductsPageByCategoryApi = async (id) => {
+export const getProductsPageByCategoryApi = async (id, pageNumber) => {
     const response = await axiosInstancePublic.get(
-        `/product/get-products-page-by-category/${id}`
+        `/product/get-products-page-by-category/${id}`,
+        {
+            params: {
+                page: pageNumber,
+            },
+        }
     );
     return response.data;
 };
@@ -63,6 +68,11 @@ export const searchNameProductNoPageApi = async (q) => {
             },
         }
     );
+    return response.data;
+};
+
+export const getProductSoldApi = async () => {
+    const response = await axiosInstancePublic.get(`/product/get-product-sold`);
     return response.data;
 };
 

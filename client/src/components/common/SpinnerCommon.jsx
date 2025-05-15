@@ -1,4 +1,3 @@
-import { color } from 'framer-motion';
 
 /* eslint-disable react/prop-types */
 const SpinnerCommon = ({ Type }) => {

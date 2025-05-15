@@ -1,7 +1,9 @@
 import AuthCommon from '@/components/common/AuthCommon';
 import ToastMsg from '@/components/common/ToastMsg';
 import { register } from '@/redux/authSlice';
+import { getRoleUser } from '@/redux/roleSlice';
 import { useFormik } from 'formik';
+import { useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { useNavigate } from 'react-router';
 import * as Yup from 'yup';
@@ -9,6 +11,12 @@ import * as Yup from 'yup';
 function Register() {
     const dispatch = useDispatch();
     const navigate = useNavigate();
+
+    const roleStore = useSelector((state) => state.role);
+
+    useEffect(() => {
+        dispatch(getRoleUser());
+    }, [dispatch]);
 
     const formik = useFormik({
         initialValues: {
@@ -26,19 +34,16 @@ function Register() {
                 .required('Mật khẩu là bắt buộc'),
         }),
         onSubmit: async (values) => {
-            dispatch(register(values))
-                .then((data) => {
-                    if (data.payload?.success) {
-                        ToastMsg({
-                            status: 'success',
-                            msg: data.payload?.message,
-                        });
-                        navigate('/login');
-                    }
-                })
-                .catch((error) => {
-                    console.error(error);
-                });
+            const valuesData = { ...values, roleId: roleStore.role._id };
+            dispatch(register(valuesData)).then((data) => {
+                if (data.payload?.success) {
+                    ToastMsg({
+                        status: 'success',
+                        msg: data.payload?.message,
+                    });
+                    navigate('/login');
+                }
+            });
         },
     });
     return (

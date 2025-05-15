@@ -38,26 +38,26 @@ function ConfirmRemoveModal({ ...props }) {
 
     const handleRemove = () => {
         //delete images product
-        (type === 'delete-image' &&
-            (dispatch(funcCallApiDelete(arrRemove)),
+        if (type === 'delete-image') {
+            dispatch(funcCallApiDelete(arrRemove));
             ToastMsg({
                 status: 'success',
                 msg: `Xóa ${arrRemove.length} ảnh thành công`,
-            }),
-            closeModal(),
-            handleHideBlock(),
-            removeFileImgUploadNew(arrRemove))) ||
-            // delete category dishes (menu)
-            (type === 'del-product-category' &&
-                dispatch(
-                    funcCallApiDelete(dataRemove),
-                    ToastMsg({
-                        status: 'success',
-                        msg: `Xóa ${title} ảnh thành công`,
-                    }),
-                    closeModal()
-                )) ||
-            //call api delete
+            });
+            closeModal();
+            handleHideBlock();
+            removeFileImgUploadNew(arrRemove);
+
+            return;
+        } else if (type === 'del-product-category') {
+            dispatch(funcCallApiDelete(dataRemove));
+            ToastMsg({
+                status: 'success',
+                msg: `Xóa ${title} ảnh thành công`,
+            });
+            closeModal();
+            return;
+        } else {
             dispatch(funcCallApiDelete(arr)).then((data) => {
                 if (data.payload?.success) {
                     ToastMsg({
@@ -76,12 +76,13 @@ function ConfirmRemoveModal({ ...props }) {
                     });
                 }
             });
+        }
     };
 
     return (
         <div
             className="fixed top-0 left-0 bottom-0 right-0 flex justify-center items-center
-                         bg-black bg-opacity-15 z-20"
+                         bg-black bg-opacity-15 z-50"
         >
             <motion.div
                 initial={{ opacity: 0 }}

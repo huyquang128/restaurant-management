@@ -28,6 +28,13 @@ import system_yellow from '@/assets/icon/system_yellow.svg';
 import setting_yellow from '@/assets/icon/setting_yellow.svg';
 import setting_white from '@/assets/icon/setting_white.svg';
 import setting_black from '@/assets/icon/setting_black.svg';
+import book_yellow from '@/assets/icon/book_yellow.svg';
+import book_white from '@/assets/icon/book_white.svg';
+import book_black from '@/assets/icon/book_black.svg';
+
+import edit_yellow from '@/assets/icon/edit_yellow.svg';
+import edit_white from '@/assets/icon/edit_white.svg';
+import edit_black from '@/assets/icon/edit_black.svg';
 
 export const categorySidebar = [
     {
@@ -39,11 +46,20 @@ export const categorySidebar = [
     },
     {
         name: 'Hóa đơn',
-        link: '',
+        link: '/admin/order',
         icon_black: bill_black,
         icon_yellow: bill_yellow,
         icon_white: bill_white,
-        children: [{ name: 'Đơn hiện thời' }, { name: 'Lịch sử đơn hàng' }],
+        children: [
+            {
+                name: 'Đơn hiện thời',
+                link: '/admin/order/order-existing',
+            },
+            {
+                name: 'Lịch sử đơn hàng',
+                link: '/admin/order/history-order',
+            },
+        ],
     },
     {
         name: 'Đặt bàn',
@@ -51,7 +67,29 @@ export const categorySidebar = [
         icon_black: calendar_black,
         icon_yellow: calendar_yellow,
         icon_white: calendar_white,
-        children: [{ name: 'Sơ đồ bàn' }, { name: 'Lịch sử đặt bàn' }],
+        children: [
+            {
+                name: 'Lịch đặt bàn ',
+                link: '/admin/set-table/booking-schedule',
+                icon_black: staff_black,
+                icon_yellow: staff_yellow,
+                icon_white: staff_white,
+            },
+            {
+                name: 'Sơ đồ bàn',
+                link: '/admin/set-table/seating-chart',
+                icon_black: staff_black,
+                icon_yellow: staff_yellow,
+                icon_white: staff_white,
+            },
+        ],
+    },
+    {
+        name: 'Đánh giá',
+        link: '/admin/reviews',
+        icon_black: edit_black,
+        icon_yellow: edit_yellow,
+        icon_white: edit_white,
     },
     {
         name: 'Mặt hàng',
@@ -69,40 +107,72 @@ export const categorySidebar = [
     },
     {
         name: 'Combo',
-        link: '',
+        link: '/admin/combo',
         icon_black: discountCode_black,
         icon_yellow: discountCode_yellow,
         icon_white: discountCode_white,
     },
     {
         name: 'Nhân viên',
-        link: '',
+        link: '/admin/staff',
         icon_black: staff_black,
         icon_yellow: staff_yellow,
         icon_white: staff_white,
         children: [
-            { name: 'Danh sách nhân viên' },
-            { name: 'Phân quyền người dùng' },
+            {
+                name: 'Danh sách nhân viên',
+                link: '/admin/staff/list-staff',
+            },
+            {
+                name: 'Phân quyền',
+                link: '/admin/staff/list-role',
+            },
         ],
     },
     {
         name: 'Khách hàng',
-        link: '',
+        link: '/admin/customer',
         icon_black: user_black,
         icon_yellow: user_yellow,
         icon_white: user_white,
     },
     {
+        name: 'Tin tức',
+        link: '/admin/management-news',
+        icon_black: book_black,
+        icon_yellow: book_yellow,
+        icon_white: book_white,
+        children: [
+            {
+                name: 'Ưu đãi',
+                link: '/admin/management-news/special-offer',
+            },
+            {
+                name: 'Sự kiện',
+                link: '/admin/management-news/event',
+            },
+        ],
+    },
+    {
         name: 'Hệ thống',
-        link: '',
+        link: '/admin/system',
         icon_black: system_black,
         icon_yellow: system_yellow,
         icon_white: system_white,
-        children: [{ name: 'Quản lý menu' }, { name: 'Quản lý slide' }],
+        children: [
+            {
+                name: 'Quản lý slide',
+                link: '/admin/system/management-slide-show',
+            },
+            {
+                name: 'Quản lý menu',
+                link: '/admin/system/management-menu-primary',
+            },
+        ],
     },
     {
         name: 'Thiết lập nhà hàng',
-        link: '',
+        link: '/admin/setting',
         icon_black: setting_black,
         icon_yellow: setting_yellow,
         icon_white: setting_white,

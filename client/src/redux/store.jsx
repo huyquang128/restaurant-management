@@ -16,11 +16,41 @@ import authReducer from './authSlice/index';
 import categoryDishesReducer from './categoryDishesSlice';
 import unitReducer from './unitSlice';
 import productReducer from './productSlice';
+import cartReducer from './cartSlice';
+import orderReducer from './orderSlice';
+import areaReducer from './areaSlice';
+import tableReducer from './tableSlice';
+import comboReducer from './comboSlice';
+import roleReducer from './roleSlice';
+import slideReducer from './slideShowSlice';
+import cityReducer from './citySlice';
+import loadingReducer from './loadingSlice';
+import notificationReducer from './notificationSlice';
+import modalReducer from './modalSlice';
+import reviewReducer from './reviewSlice';
+import postReducer from './postSlice';
 
 const persistConfig = {
     key: 'root',
     storage,
-    blacklist: ['user', 'unit', 'product', 'categoryDishes'],
+    blacklist: [
+        'user',
+        'unit',
+        'product',
+        'categoryDishes',
+        'cart',
+        'order',
+        'area',
+        'combo',
+        'role',
+        'slide',
+        'city',
+        'loading',
+        'notification',
+        'modal',
+        'review',
+        'post',
+    ],
 };
 
 const rootReducer = {
@@ -29,6 +59,19 @@ const rootReducer = {
     categoryDishes: categoryDishesReducer,
     unit: unitReducer,
     product: productReducer,
+    cart: cartReducer,
+    order: orderReducer,
+    area: areaReducer,
+    table: tableReducer,
+    combo: comboReducer,
+    role: roleReducer,
+    slide: slideReducer,
+    city: cityReducer,
+    loading: loadingReducer,
+    notification: notificationReducer,
+    modal: modalReducer,
+    review: reviewReducer,
+    post: postReducer,
 };
 
 const persistedReducer = persistReducer(

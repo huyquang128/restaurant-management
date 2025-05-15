@@ -53,6 +53,11 @@ function Login() {
                             });
                             navigate('/');
                         }
+                    } else {
+                        ToastMsg({
+                            status: 'error',
+                            msg: 'Tên tài khoản mật khẩu không đúng',
+                        });
                     }
                 })
                 .catch((error) => {

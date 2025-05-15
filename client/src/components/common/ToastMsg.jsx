@@ -1,12 +1,13 @@
 /* eslint-disable no-unused-vars */
 import { toast } from 'react-toastify';
-import banner_1 from '@/assets/image/banner_1.jpg';
 import Button from './Button/Button';
 import check_green_2 from '@/assets/icon/check_green_2.svg';
+import warning from '@/assets/icon/warning.svg';
 import close_green from '@/assets/icon/close_green.svg';
+import close_yellow from '@/assets/icon/close_yellow.svg';
 import close_red from '@/assets/icon/close_red.svg';
 import close_red_2 from '@/assets/icon/close_red_2.svg';
-import { Link, useNavigate } from 'react-router';
+import bill from '@/assets/icon/bill.svg';
 import FormatVND from './FormatVND';
 
 function ToastMsg({ ...props }) {
@@ -20,7 +21,7 @@ function ToastMsg({ ...props }) {
         funcCallApiGet,
         urlRedirect,
     } = props;
-    
+
     const fetchApi = () => {
         dispatch(funcCallApiGet(data.apiUpload)).then((data) => {
             if (data.payload.success) {
@@ -34,26 +35,40 @@ function ToastMsg({ ...props }) {
             <div className={`w-full bg-bg-tertiary font-cabin`}>
                 <div
                     className={` text-white py-1.5 px-3 flex items-center justify-between  ${
-                        status === 'success' ? 'bg-green-100' : 'bg-red-100'
+                        (status === 'success' && 'bg-green-100') ||
+                        (status === 'warning' && 'bg-orange-100') ||
+                        (status === 'order_new' && 'bg-orange-100') ||
+                        'bg-red-100'
                     }`}
                 >
                     <img
-                        src={status === 'success' ? check_green_2 : close_red}
+                        src={
+                            (status === 'success' && check_green_2) ||
+                            (status === 'warning' && warning) ||
+                            (status === 'order_new' && bill) ||
+                            close_red
+                        }
                         alt="Icon"
                         className="w-4 h-4"
                     />
                     <span
                         className={`${
-                            status === 'success'
-                                ? 'text-green-600'
-                                : 'text-red-600'
+                            (status === 'success' && 'text-green-600') ||
+                            (status === 'warning' && 'text-yellow-600') ||
+                            (status === 'order_new' && 'text-orange-600') ||
+                            'text-red-600'
                         }`}
                     >
                         {msg}
                     </span>
                     <img
                         onClick={() => toast.dismiss(toastId)}
-                        src={status === 'success' ? close_green : close_red_2}
+                        src={
+                            (status === 'success' && close_green) ||
+                            (status === 'warning' && close_yellow) ||
+                            (status === 'order_new' && close_yellow) ||
+                            close_red_2
+                        }
                         alt=""
                         className="cursor-pointer"
                     />
@@ -106,7 +121,7 @@ function ToastMsg({ ...props }) {
         pauseOnHover: false,
         draggable: false,
         style: {
-            width: '300px',
+            // width: '3px',
             padding: 0,
             overflow: 'hidden',
             borderRadius: '8px',

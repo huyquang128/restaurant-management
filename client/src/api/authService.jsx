@@ -14,31 +14,16 @@ export const registerApi = async (formData) => {
 };
 
 export const loginApi = async (formData) => {
-    try {
-        const response = await axiosInstancePublic.post(
-            '/auth/login',
-            formData
-        );
-        return response.data;
-    } catch (error) {
-        throw new Error(error);
-    }
+    const response = await axiosInstancePublic.post('/auth/login', formData);
+    return response.data;
 };
 
 export const logoutApi = async () => {
-    try {
-        const response = await axiosInstancePublic.post('/auth/logout');
-        return response.data;
-    } catch (error) {
-        throw new Error(error);
-    }
+    const response = await axiosInstancePublic.post('/auth/logout');
+    return response.data;
 };
 
 export const refreshTokenApi = async () => {
-    try {
-        const response = await axiosInstancePublic.post('/auth/refresh-token');
-        return response.data;
-    } catch (error) {
-        throw new Error(error);
-    }
+    const response = await axiosInstancePublic.post('/auth/refresh-token');
+    return response.data;
 };

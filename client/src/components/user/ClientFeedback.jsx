@@ -10,6 +10,10 @@ import {
 import { useInView } from 'react-intersection-observer';
 import { motion } from 'framer-motion';
 import { Autoplay } from 'swiper/modules';
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllReview } from '@/redux/reviewSlice';
+import CapitalizeFirstLetter from '../common/CapitalizeFirstLetter';
 
 const recomends = [
     {
@@ -39,10 +43,17 @@ const recomends = [
 ];
 
 function ClientFeedback() {
+    const dispatch = useDispatch();
     const { ref, inView } = useInView({
         threshold: 0.5,
         triggerOnce: true,
     });
+
+    const reviewStore = useSelector((state) => state.review);
+
+    useEffect(() => {
+        dispatch(getAllReview());
+    }, [dispatch]);
 
     return (
         <div ref={ref} className="bg-white py-32">
@@ -115,7 +126,7 @@ function ClientFeedback() {
                             allowSlidePrev={true}
                             modules={[Navigation, Autoplay]}
                         >
-                            {recomends.map((item, index) => (
+                            {reviewStore.reviews?.map((item, index) => (
                                 <SwiperSlide
                                     key={index}
                                     className="cursor-pointer"
@@ -137,12 +148,18 @@ function ClientFeedback() {
                                         />
                                         <div className="font-cabin text-gray-primary">
                                             <div className="font-oswald text-black">
-                                                {item.name.toLocaleUpperCase()}
+                                                {item.reviewer?.name ||
+                                                    item.reviewer?.username}
                                             </div>
                                             <div className="mb-5">
-                                                {item.address}
+                                                {item.reviewer.address
+                                                    ?.addressDetail || ''}
                                             </div>
-                                            <q className="">{item.content}</q>
+                                            <q className="">
+                                                {CapitalizeFirstLetter(
+                                                    item.content
+                                                )}
+                                            </q>
                                         </div>
                                     </motion.div>
                                 </SwiperSlide>

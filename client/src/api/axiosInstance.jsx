@@ -5,9 +5,9 @@ export const BASE_URL = 'http://localhost:3000/api/v1';
 
 export const axiosInstancePublic = axios.create({
     baseURL: BASE_URL,
-    headers: {
-        'Content-Type': 'application/json',
-    },
+    // headers: {
+    //     'Content-Type': 'application/json',
+    // },
     withCredentials: true,
 });
 
@@ -46,7 +46,7 @@ const axiosInstancePrivate = (getState, dispatch) => {
             ) {
                 //đánh dấu gọi api 1 lần
                 originalRequest._retry = true;
-
+                // Trạng thái loading
                 try {
                     // Gọi Redux dispatch để refresh token
                     const data = await dispatch(refreshToken());

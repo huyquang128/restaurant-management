@@ -17,8 +17,8 @@ function SearchCommon({ ...props }) {
             <input
                 type="text"
                 placeholder="Tìm mặt hàng..."
-                className="border-none pl-14 pr-3 py-2.5 outline-bg-tertiary outline
-                             bg-bg-tertiary focus:outline-yellow-primary w-full rounded-md
+                className="border-none pl-14 pr-3 py-2 outline-bg-tertiary outline
+                             bg-bg-secondary focus:outline-yellow-primary w-full rounded-md
                              text-text-primary"
                 value={charSearch}
                 onChange={(e) => setCharSearch(e.target.value)}

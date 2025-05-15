@@ -22,7 +22,7 @@ const removeRefreshToken = async (userId) => {
 };
 
 const register = async (req, res) => {
-    const { username, email, password } = req.body;
+    const { username, email, password, roleId } = req.body;
     try {
         const user = await User.findOne({ email });
         if (user) {
@@ -38,6 +38,7 @@ const register = async (req, res) => {
             username,
             email,
             password: hashedPassword,
+            role: roleId,
         });
 
         await newUser.save();
@@ -55,10 +56,12 @@ const register = async (req, res) => {
 };
 
 const generateAccessTokenJwt = (user) => {
+    const roleName =
+        typeof user.role === 'string' ? user.role : user.role?.name;
     const accessToken = jwt.sign(
         {
             _id: user._id,
-            role: user.role,
+            role: roleName,
         },
         process.env.JWT_ACCESS_KEY,
         { expiresIn: '30s' }
@@ -67,10 +70,12 @@ const generateAccessTokenJwt = (user) => {
     return accessToken;
 };
 const generateRefreshTokenJWT = (user) => {
+    const roleName =
+        typeof user.role === 'string' ? user.role : user.role?.name;
     const refreshToken = jwt.sign(
         {
             _id: user._id,
-            role: user.role,
+            role: roleName,
         },
         process.env.JWT_REFRESH_KEY,
         { expiresIn: '365d' }
@@ -82,7 +87,7 @@ const generateRefreshTokenJWT = (user) => {
 const login = async (req, res) => {
     const { email, password_Client } = req.body;
     try {
-        const user = await User.findOne({ email });
+        const user = await User.findOne({ email }).populate('role');
         if (!user) {
             return res.status(404).json({
                 success: false,
@@ -110,12 +115,14 @@ const login = async (req, res) => {
             sameSite: 'strict',
         });
 
-        // const { password, ...orther } = user._doc;
-
         res.json({
             success: true,
             message: 'Đăng nhập thành công!!!',
             accessToken,
+            user: {
+                _id: user._id,
+                role: user.role.name,
+            },
         });
     } catch (error) {
         console.error(error);
@@ -161,13 +168,14 @@ const refreshTokenJWT = async (req, res) => {
             success: true,
             message: 'Phiên đăng nhập mới đã tạo thành công!!!',
             accessToken: newAccessToken,
+            user,
         });
     });
 };
 
 const logout = async (req, res) => {
     const refreshToken = req.cookies.refreshToken;
-    const userId = jwt.decode(refreshToken)._id;
+    const userId = jwt.decode(refreshToken)?._id;
 
     //remove refresh token from redis-cloud
     await removeRefreshToken(userId);

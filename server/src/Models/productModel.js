@@ -18,9 +18,12 @@ const ProductSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'CategoryDishes',
     },
-    comments: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Comment' }],
+    combo: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Combo' }],
+    reviews: [
+        { type: mongoose.Schema.Types.ObjectId, ref: 'Review', default: [] },
+    ],
     createdAt: { type: Date, default: Date.now },
-    updatedAt: { type: Date },
+    updatedAt: { type: Date }, 
 });
 
 //create slug

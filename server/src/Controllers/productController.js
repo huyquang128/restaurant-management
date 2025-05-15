@@ -10,16 +10,17 @@ const removeAccents = require('remove-accents');
 const getProductsPageByCategory = async (req, res) => {
     const page = parseInt(req.query.page) || 1;
     const { id } = req.params;
-    const pageSize = 8;
+    const pageSize = 16;
 
     try {
-        const allProducts = await Product.find({ category: id })
+        const allProducts = await Product.find({ categoryDishes: id })
+            .populate('unit')
             .skip((page - 1) * pageSize)
             .limit(pageSize)
             .sort({ _id: -1 });
 
         //sum product
-        const totalProducts = await Product.countDocuments();
+        const totalProducts = allProducts.length;
 
         //sum page
         const totalPages = Math.ceil(totalProducts / pageSize);
@@ -29,9 +30,11 @@ const getProductsPageByCategory = async (req, res) => {
             data: allProducts,
             page: parseInt(page),
             totalPages,
+            totalProducts,
             currentPage: page,
         });
     } catch (error) {
+        console.log(error);
         res.status(500).json({
             success: false,
             message: 'An error occurred while fetching products',
@@ -89,12 +92,36 @@ const getAllProducts = async (req, res) => {
     }
 };
 
+const getProductSold = async (req, res) => {
+    try {
+        const findProductSold = await Product.find()
+            .sort({ sold: -1 })
+            .limit(10);
+
+        return res.json({
+            success: true,
+            data: findProductSold,
+        });
+    } catch (error) {
+        return res.status(500).json({
+            success: false,
+            message: 'An error occurred while getting all',
+        });
+    }
+};
+
 const getProductByNameSlug = async (req, res) => {
     const { slug } = req.params;
 
     try {
         const product = await Product.findOne({ slug })
             .populate('categoryDishes', 'name')
+            .populate({
+                path: 'reviews',
+                populate: {
+                    path: 'reviewer',
+                },
+            })
             .populate('unit', 'name');
 
         if (!product) {
@@ -201,35 +228,30 @@ const updateProduct = async (req, res) => {
     try {
         const convertObjectId = new mongoose.Types.ObjectId(id);
 
-        const isProductExisted = await Product.findOne({
+        const findProduct = await Product.findOne({
             _id: convertObjectId,
         });
-        if (!isProductExisted) {
+
+        if (!findProduct) {
             return res.status(404).json({
                 success: false,
                 message: 'Không tìm thấy sản phẩm',
             });
         }
-        const jsonParser = JSON.parse(images);
 
-        const imagesArrOld = Array.isArray(jsonParser)
-            ? jsonParser
-            : [jsonParser];
-
-        // convert objectId
-        const objectIdImgOld = imagesArrOld.map(
-            (img) => new mongoose.Types.ObjectId(img._id)
-        );
-
-        const imagesFileNew = Array.isArray(imgFile) ? imgFile : [imgFile];
-
+        //xử lý mảng chứa ảnh cũ cần xóa
         let filterImgOld = [];
 
-        if (imagesArrOld.length > 0) {
-            //remove img old cloud
-            filterImgOld = isProductExisted.images.filter(
-                (img) =>
-                    !objectIdImgOld.some((item) => item._id.equals(img._id))
+        const jsonParser = JSON.parse(images);
+
+        const objectIdImgOld = jsonParser.map(
+            (imgIdOld) => new mongoose.Types.ObjectId(imgIdOld)
+        );
+
+        if (jsonParser.length > 0) {
+            //xóa ảnh cũ trên cloudinary
+            filterImgOld = findProduct.images.filter((img) =>
+                objectIdImgOld.some((imgId) => imgId.equals(img._id))
             );
 
             if (filterImgOld.length <= 0)
@@ -242,7 +264,7 @@ const updateProduct = async (req, res) => {
                 removeFromCloudinary(img.imageId)
             );
             const results = await Promise.allSettled(filterImgId);
-            
+
             results.forEach((result) => {
                 if (result.value.result === 'not found') {
                     return res.status(401).json({
@@ -254,6 +276,8 @@ const updateProduct = async (req, res) => {
         }
 
         //upload new img cloud
+        const imagesFileNew = Array.isArray(imgFile) ? imgFile : [imgFile];
+
         const uploadCloud = imagesFileNew.map((img) => uploadToCloudinary(img));
         const resultUpload = await Promise.all(uploadCloud);
 
@@ -262,7 +286,11 @@ const updateProduct = async (req, res) => {
             url: item.secure_url,
         }));
 
-        //update product
+        //cập nhật sản phẩm
+        //lọc lấy image còn lại không xóa
+        const filterImg = findProduct.images.filter(
+            (img) => !objectIdImgOld.some((imgId) => imgId.equals(img._id))
+        );
         const updateProduct = await Product.findByIdAndUpdate(
             {
                 _id: convertObjectId,
@@ -277,8 +305,7 @@ const updateProduct = async (req, res) => {
                 quantity: Number(quantity),
                 unit,
                 note,
-                categoryDishes,
-                images: [...imagesArrOld, ...formatImg],
+                images: [...filterImg, ...formatImg],
             },
             {
                 new: true,
@@ -304,13 +331,41 @@ const updateProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
     const { ids } = req.body;
-    const { q, page = 1 } = req.query;
+    // const { q, page = 1 } = req.query;
     try {
         const productArray = Array.isArray(ids) ? ids : [ids];
 
         //kiểm tra trong redis trước
-        const redisKey = `search:${q}:page:${page}`;
-        await redisClient.del(redisKey);
+        // const redisKey = `search:${q}:page:${page}`;
+        // await redisClient.del(redisKey);
+
+        //xóa ảnh sản phẩm trên cloudinary
+        const findProduct = await Product.find({ _id: { $in: productArray } });
+
+        if (findProduct.length > 0) {
+            const filterImg = findProduct.map((item) => {
+                return item.images;
+            });
+            const filterImgIdRemove = filterImg
+                .flat()
+                .map((item) => item.imageId);
+
+            const filterImgId = filterImgIdRemove.map((img) =>
+                removeFromCloudinary(img)
+            );
+
+            const results = await Promise.allSettled(filterImgId);
+
+            results.forEach((result) => {
+                if (result.value.result === 'not found') {
+                    return res.status(401).json({
+                        success: false,
+                        message: 'Xóa ảnh thất bại',
+                    });
+                    d;
+                }
+            });
+        }
 
         // Xử lý xóa sản phẩm
         const result = await Product.deleteMany({ _id: { $in: productArray } });
@@ -464,4 +519,5 @@ module.exports = {
     searchProduct,
     getAllProducts,
     searchAllProductNoPage,
+    getProductSold,
 };
