@@ -11,7 +11,6 @@ import SelectedTable from '@/pages/admin/SelectedTable';
 import SetTable from '@/pages/admin/SetTable';
 import Login from '@/pages/auth/Login';
 import Register from '@/pages/auth/Register';
-import ProductDetail from '@/pages/product/productDetail';
 import Home from '@/pages/User/Home';
 import Menu from '@/pages/User/Menu';
 import Cart from '@/pages/User/Cart';
@@ -46,6 +45,7 @@ import ManagementNew from '@/pages/admin/ManagementNew';
 import ManagementSpecialOffer from '@/pages/admin/ManagementSpecialOffer';
 import ManagementEvent from '@/pages/admin/ManagementEvent';
 import AddSpecialOffer from '@/pages/admin/AddSpecialOffer';
+import ProductDetail from '@/pages/product/ProductDetail';
 
 const routerPublic = [
     { path: '', components: <Home /> },

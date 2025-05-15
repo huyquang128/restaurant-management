@@ -1,4 +1,3 @@
-import banner_1 from '@/assets/image/banner_1.jpg';
 import ProductDetailCardCommon from '@/components/common/CardCommon/ProductDetailCardCommon';
 import { listStar } from '@/components/common/listStart';
 import ReviewModal from '@/components/modals/ReviewModal';
@@ -9,7 +8,7 @@ import {
 } from '@fortawesome/free-solid-svg-icons';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { useEffect, useMemo, useState } from 'react';
-import { Link, useLocation, useParams } from 'react-router';
+import { Link, useLocation } from 'react-router';
 import check_green_2 from '@/assets/icon/check_green_2.svg';
 import Button from '@/components/common/Button/Button';
 import edit_white from '@/assets/icon/edit_white.svg';
@@ -19,7 +18,6 @@ import { useUnderlinePosition } from '@/components/hooks/useUnderlinePosition';
 import UnderLineCategoryCommon from '@/components/common/UnderLineCategoryCommon';
 import { useDispatch, useSelector } from 'react-redux';
 import { getProductBySlug } from '@/redux/productSlice';
-import formatFullDate from '@/components/common/formatFullDate';
 import CapitalizeFirstLetter from '@/components/common/CapitalizeFirstLetter';
 import renderAverageStar from '@/components/common/RenderAverageStar';
 import { formatTimeAgo } from '@/components/common/formatTimeAgo';
