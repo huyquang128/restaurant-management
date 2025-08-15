@@ -16,6 +16,7 @@ const initialState = {
         title: '',
     },
     arrImgUpload: null,
+    
 };
 
 export const addPost = createAsyncThunk(

@@ -46,22 +46,24 @@ function HomeLayout() {
                 <AnimatePresence key={index}>
                     {currentImgIndex === index && (
                         <motion.div
-                            key={index}
+                            key={item.urlImg.url}
                             initial={{ opacity: 0 }}
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
-                            transition={{ duration: 1.5 }}
+                            transition={{
+                                duration: 1.5,
+                                ease: 'easeInOut',
+                            }}
                             className="fixed top-0 flex flex-col w-full h-full z-10"
                         >
-                            <motion.img
-                                transition={{ duration: 1.5 }}
-                                src={item.urlImg.url}
-                                alt=""
-                                className={`w-full h-full object-cover brightness-50 ${
-                                    fixedPosition
-                                        ? `translate-y-[${positionTranslate}px]`
-                                        : ''
-                                }`}
+                            <motion.div
+                                style={{
+                                    backgroundImage: `url(${item.urlImg.url})`,
+                                    backgroundSize: 'cover',
+                                    backgroundPosition: 'center',
+                                    filter: 'brightness(50%)',
+                                }}
+                                className="fixed top-0 w-full h-full z-10"
                             />
                         </motion.div>
                     )}

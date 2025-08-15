@@ -14,7 +14,7 @@ import ColorRingAnimation from './spinnerAnimation/ColorRingAnimation';
 function AuthCommon({ type, formik }) {
     const authStore = useSelector((state) => state.auth);
     return (
-        <div className="flex font-cabin max-sm:flex-wrap-reverse">
+        <div className="flex font-cabin max-sm:flex-wrap-reverse bg-bg-primary">
             <div
                 className={`w-1/2  items-center py-5 min-h-screen flex justify-center
                              max-md:w-2/3 max-sm:w-full max-sm:min-h-full`}

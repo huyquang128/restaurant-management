@@ -4,53 +4,33 @@ import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import 'swiper/css/pagination';
 import { Pagination, Autoplay } from 'swiper/modules';
-import shop_image from '@/assets/image/shop-image-4-370x360.webp';
 import { motion } from 'framer-motion';
 import { useInView } from 'react-intersection-observer';
-
-const imageCarousel = [
-    {
-        srcImg: shop_image,
-        title: 'Jumbo Shrimp Cocktail',
-        sub_title: 'Boiled',
-    },
-    {
-        srcImg: shop_image,
-        title: 'Jumbo Shrimp Cocktail',
-        sub_title: 'Boiled',
-    },
-    {
-        srcImg: shop_image,
-        title: 'Jumbo Shrimp Cocktail',
-        sub_title: 'Boiled',
-    },
-    {
-        srcImg: shop_image,
-        title: 'Jumbo Shrimp Cocktail',
-        sub_title: 'Boiled',
-    },
-    {
-        srcImg: shop_image,
-        title: 'Jumbo Shrimp Cocktail',
-        sub_title: 'Boiled',
-    },
-    {
-        srcImg: shop_image,
-        title: 'Jumbo Shrimp Cocktail',
-        sub_title: 'Boiled',
-    },
-];
+import { useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
+import { getAllProducts } from '@/redux/productSlice';
+import FormatVND from '../common/FormatVND';
 
 function SpecialDishes() {
+    const dispatch = useDispatch();
+
+    const productStore = useSelector((state) => state.product);
+
     const { ref, inView } = useInView({
         threshold: 0.5,
         triggerOnce: true,
     });
 
+    useEffect(() => {
+        dispatch(getAllProducts());
+    }, [dispatch]);
+
     return (
         <div ref={ref} className="bg-white">
-            <div className="flex flex-col justify-center text-center w-xl max-lg:w-lg max-md:w-md max-sm:w-sm max-xs:w-xs mx-auto bg-white py-10
-            max-xs:px-3 ">
+            <div
+                className="flex flex-col justify-center text-center w-xl max-lg:w-lg max-md:w-md max-sm:w-sm max-xs:w-xs mx-auto bg-white py-10
+            max-xs:px-3 "
+            >
                 <motion.div
                     initial={{ opacity: 0, y: '-100%' }}
                     animate={
@@ -116,49 +96,62 @@ function SpecialDishes() {
                         autoplay={{ delay: 3000, disableOnInteraction: false }}
                         className="my-swiper"
                     >
-                        {imageCarousel.map((item, index) => (
-                            <SwiperSlide key={index}>
-                                <motion.div
-                                    initial={{
-                                        opacity: 0,
-                                        y: index % 2 === 0 ? '100%' : '-100%',
-                                    }}
-                                    animate={
-                                        inView
-                                            ? {
-                                                  opacity: 1,
-                                                  y: '0',
-                                              }
-                                            : {
-                                                  opacity: 0,
-                                                  y:
-                                                      index % 2 === 0
-                                                          ? '100%'
-                                                          : '-100%',
-                                              }
-                                    }
-                                    transition={{ duration: 1 }}
-                                    className="relative flex flex-col justify-center items-center
+                        {productStore?.products?.data
+                            ?.slice(12, 19)
+                            .map((item, index) => (
+                                <SwiperSlide key={index}>
+                                    <motion.div
+                                        initial={{
+                                            opacity: 0,
+                                            y:
+                                                index % 2 === 0
+                                                    ? '100%'
+                                                    : '-100%',
+                                        }}
+                                        animate={
+                                            inView
+                                                ? {
+                                                      opacity: 1,
+                                                      y: '0',
+                                                  }
+                                                : {
+                                                      opacity: 0,
+                                                      y:
+                                                          index % 2 === 0
+                                                              ? '100%'
+                                                              : '-100%',
+                                                  }
+                                        }
+                                        transition={{ duration: 1 }}
+                                        className="relative flex flex-col justify-center items-center
                                                 "
-                                >
-                                    <img
-                                        src={item.srcImg}
-                                        alt=""
-                                        className="w-full h-full rounded-sm object-cover"
-                                    />
-                                    <div className="font-oswald text-xl font-medium mt-5">
-                                        {item.title}
-                                    </div>
-                                    <div className="">{item.sub_title}</div>
-                                    <div
-                                        className="absolute bg-yellow-primary font-cabin text-white
-                                                    py-1.5 px-2 top-4 left-4 "
                                     >
-                                        Chỉ 15.000đ
-                                    </div>
-                                </motion.div>
-                            </SwiperSlide>
-                        ))}
+                                        <img
+                                            src={
+                                                item?.images &&
+                                                item.images[0]?.url
+                                            }
+                                            alt=""
+                                            className="w-full h-full rounded-sm object-cover"
+                                        />
+                                        <div className="font-oswald text-xl font-medium mt-5">
+                                            {item.name}
+                                        </div>
+                                        <div className="">
+                                            {item?.categoryDishes?.name}
+                                        </div>
+                                        <div
+                                            className="absolute bg-yellow-primary font-cabin text-white
+                                                    py-1.5 px-2 top-4 left-4 "
+                                        >
+                                            Chỉ{' '}
+                                            {FormatVND(
+                                                item.promotion || item.selling
+                                            )}
+                                        </div>
+                                    </motion.div>
+                                </SwiperSlide>
+                            ))}
                     </Swiper>
                 </div>
             </div>

@@ -11,6 +11,7 @@ const {
     getStaffPage,
     getAllStaffRole,
     addStaff,
+    getUserByUsername,
 } = require('../Controllers/userController');
 
 const middlewareVerifyToken = require('../middleware/verifyToken');
@@ -19,6 +20,12 @@ router.get(
     '/get-user-by-id/:id',
     middlewareVerifyToken.verifyToken,
     getUserById
+);
+
+router.get(
+    '/get-user-by-username/:username',
+    middlewareVerifyToken.verifyToken,
+    getUserByUsername
 );
 
 router.get(

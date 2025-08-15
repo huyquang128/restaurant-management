@@ -22,6 +22,28 @@ const getUserById = async (req, res) => {
     }
 };
 
+const getUserByUsername = async (req, res) => {
+    const username = req.params.username;
+    try {
+        const user = await User.findOne({ username }).select('-password');
+        if (!user) {
+            return res.status(404).json({
+                success: false,
+                message: 'User not found',
+            });
+        }
+        return res.json({ success: true, data: user });
+    } catch (error) {
+        // Bắt tất cả lỗi và gửi response lỗi
+        if (!res.headersSent) {
+            return res.status(500).json({
+                success: false,
+                message: 'An error occurred while getting user by ID',
+            });
+        }
+    }
+};
+
 const getAllUserRole = async (req, res) => {
     try {
         const user = await User.find({
@@ -196,4 +218,5 @@ module.exports = {
     getStaffPage,
     getAllStaffRole,
     addStaff,
+    getUserByUsername,
 };

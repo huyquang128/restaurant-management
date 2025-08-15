@@ -46,12 +46,28 @@ import AddSpecialOffer from '@/pages/admin/AddSpecialOffer';
 import ProductDetail from '@/pages/product/ProductDetail';
 import SettingAdmin from '@/pages/admin/SettingAdmin';
 import AddStaff from '@/pages/admin/AddStaff';
+import SpecialOfferDetail from '@/pages/User/SpecialOfferDetail';
+import UserDetail from '@/pages/User/UserDetail';
+import OrderUser from '@/pages/User/OrderUser';
 
 const routerPublic = [
     { path: '', components: <Home /> },
     { path: '/menu', components: <Menu /> },
     { path: '/cart', components: <Cart /> },
     { path: '/special-offer', components: <SpecialOffer /> },
+
+    {
+        path: '/special-offer/:slug',
+        components: <SpecialOfferDetail />,
+    },
+    {
+        path: '/user-detail/:username',
+        components: <UserDetail />,
+    },
+    {
+        path: '/order',
+        components: <OrderUser />,
+    },
     { path: '/contact', components: <Contact /> },
     { path: '/payment-result', components: <PaymentResult /> },
     { path: '/cart/checkout', components: <CheckOut /> },

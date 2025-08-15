@@ -25,7 +25,7 @@ function ProductDetailModal({ ...props }) {
                 exit={{ opacity: 0 }}
                 transition={{ duration: 0.5 }}
                 className="bg-bg-secondary w-[600px] relative    
-                shadow-lg h-[700px] rounded-lg"
+                shadow-lg h-[650px] rounded-lg"
             >
                 <div
                     onClick={onClose}

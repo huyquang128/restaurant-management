@@ -10,7 +10,7 @@ import formatDate from '../common/formatDate.jsx';
 import email from '@/assets/icon/email.svg';
 import calendar_2 from '@/assets/icon/calendar_2.svg';
 import phone from '@/assets/icon/phone.svg';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import FormatVND from '../common/FormatVND.jsx';
 
 function BlockListItemCommon({ ...props }) {
@@ -43,6 +43,7 @@ function BlockListItemCommon({ ...props }) {
         handleCheckedAll,
         handleActiveItem,
     } = useCheckboxDelete(arr);
+    const dispatch = useDispatch();
 
     const authStore = useSelector((state) => state.auth);
 

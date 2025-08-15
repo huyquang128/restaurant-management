@@ -2,7 +2,7 @@ import { getProductCart } from '@/redux/cartSlice';
 import { useEffect, useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import FormatVND from '@/components/common/FormatVND';
-import { Link, useNavigate } from 'react-router';
+import { Link } from 'react-router';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import Button from '@/components/common/Button/Button';
@@ -25,7 +25,6 @@ const methodPayment = [
 ];
 
 const formPayment = [
-    { name: 'form_payment', title: 'Thanh toán toàn bộ', value: 'all' },
     { name: 'form_payment', title: 'Đặt cọc một phần', value: 'partial' },
 ];
 

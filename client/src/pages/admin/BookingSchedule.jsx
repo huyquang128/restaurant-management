@@ -130,7 +130,7 @@ function BookingSchedule() {
             </div>
 
             {/* list table restaurant */}
-            <div className="grid grid-cols-3 text-sm gap-8 max-xl:grid-cols-2 max-sm:grid-cols-1 ">
+            <div className="grid grid-cols-2 text-sm gap-8 max-xl:grid-cols-2 max-sm:grid-cols-1 ">
                 {arrOrderFilter.length <= 0 ? (
                     <div
                         className="col-span-1 col-start-2 flex flex-col 
@@ -153,16 +153,17 @@ function BookingSchedule() {
                             item.tableSeleted?.status !== 'in_use' && (
                                 <div
                                     key={index}
-                                    className="border border-color-active text-center bg-bg-tertiary 
+                                    className="bg-bg-secondary text-center  
                                             rounded-lg text-text-primary relative"
                                 >
                                     <div className="w-full border-b border-color-active bg-color-active rounded-lg">
                                         <div className="py-5 text-yellow-primary">
+                                            (
                                             {CapitalizeWord(
                                                 item.nameCustomer ||
                                                     item.customer?.username
                                             )}{' '}
-                                            - {item.phoneCustomer} - (
+                                            - {item.phoneCustomer}) - (
                                             {codeOrderId(item._id)})
                                         </div>
                                     </div>
@@ -212,6 +213,13 @@ function BookingSchedule() {
                                                 <span>
                                                     {FormatVND(item.totalPrice)}
                                                 </span>
+                                                <div>
+                                                    - ({'Cọc '}
+                                                    {FormatVND(
+                                                        item.totalPrice / 2
+                                                    )}
+                                                    )
+                                                </div>
                                             </div>
                                         </div>
                                     </div>

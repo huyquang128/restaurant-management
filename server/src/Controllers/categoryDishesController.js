@@ -39,7 +39,12 @@ const getCategoryDishes = async (req, res) => {
 
 const getAllCategoriesDishes = async (req, res) => {
     try {
-        const categoryDishes = await CategoryDishes.find().populate('products');
+        const categoryDishes = await CategoryDishes.find().populate({
+            path: 'products',
+            populate: {
+                path: 'reviews',
+            },
+        });
 
         res.json({ success: true, data: categoryDishes });
     } catch (error) {

@@ -303,10 +303,10 @@ function ProductDetail() {
                                                                 font-bold"
                                                             >
                                                                 {CapitalizeFirstLetter(
-                                                                    item.reviewer.username.slice(
+                                                                    item.reviewer?.username.slice(
                                                                         0,
                                                                         1
-                                                                    )
+                                                                    ) || ''
                                                                 )}
                                                             </div>
                                                             <div className="flex flex-col gap-1">
@@ -542,7 +542,8 @@ function ProductDetail() {
                                                                             {CapitalizeFirstLetter(
                                                                                 item
                                                                                     ?.response
-                                                                                    ?.content
+                                                                                    ?.content ||
+                                                                                    ''
                                                                             )}
                                                                         </p>
                                                                     </div>

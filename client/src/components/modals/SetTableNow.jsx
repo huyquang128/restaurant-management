@@ -97,10 +97,11 @@ function SetTableNow({ isOpenModal, setIsOpenModal }) {
                         : { opacity: 0 }
                 }
                 transition={{ duration: 0.3 }}
+                className=""
             >
                 <div
                     ref={childRef}
-                    className="bg-bg-secondary w-[550px] h-[700px] p-3 rounded-t-lg shadow-lg 
+                    className="bg-bg-primary w-[550px] h-[600px] p-3 rounded-t-lg shadow-lg 
                             overflow-y-scroll no-scrollbar px-[50px] py-10"
                 >
                     <form

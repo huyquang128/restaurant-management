@@ -26,17 +26,21 @@ router.get(
     middlewareVerifyToken.verifyToken,
     getOrderByUser
 );
+
 router.get(
     '/get-all-orders',
     middlewareVerifyToken.verifyTokenAdmin,
     getAllOrder
 );
+
 router.get(
     '/get-order-by-id/:orderId',
     middlewareVerifyToken.verifyTokenAdmin,
     getOrderById
 );
+
 router.post('/add-order', upload.none(), addOrder);
+
 router.post(
     '/update-quantity-dishes-order/:orderId',
     middlewareVerifyToken.verifyTokenAdmin,

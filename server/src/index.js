@@ -1,4 +1,4 @@
-const express = require('express');
+ const express = require('express');
 const connectDB = require('./Config/db');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
@@ -32,10 +32,12 @@ const server = http.createServer(app);
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+
 app.use(
     cors({
-        origin: 'https://restaurant-management-lac-nu.vercel.app', // Chỉ định domain của client
-        credentials: true, // Cho phép gửi cookie / thông tin xác thực
+        // origin: 'https://restaurant-management-lac-nu.vercel.app',
+        origin: 'http://localhost:5173',
+        credentials: true,
     })
 );
 

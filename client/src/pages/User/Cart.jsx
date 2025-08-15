@@ -23,7 +23,6 @@ import { format } from 'date-fns';
 import Button from '@/components/common/Button/Button';
 import { addOrder } from '@/redux/orderSlice';
 import ToastMsg from '@/components/common/ToastMsg';
-import socket from '@/sockets/socket';
 
 const listPromotion = [{ name: 'Đầy tiền, không cần ưu đãi' }];
 
@@ -48,7 +47,9 @@ const listTimeSetTable = [
     { name: '10:30 PM' },
 ];
 
-const listAddressRestaurant = [{ name: 'Cở sở 1: Đại học mỏ đỉa chất' }];
+const listAddressRestaurant = [
+    { name: 'ngõ 85: Lê văn hiến - bắc từ liêm - hà nội' },
+];
 
 const weekDays = ['T2', 'T3', 'T4', 'T5', 'T6', 'T7', 'CN'];
 

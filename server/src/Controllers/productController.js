@@ -80,7 +80,10 @@ const getAllProductPage = async (req, res) => {
 
 const getAllProducts = async (req, res) => {
     try {
-        const products = await Product.find().populate('unit', 'name');
+        const products = await Product.find()
+            .populate('categoryDishes', 'name')
+            .populate('unit', 'name')
+            .sort({ _id: -1 });
 
         return res.json({
             success: true,

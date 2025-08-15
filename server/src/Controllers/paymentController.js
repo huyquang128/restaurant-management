@@ -15,15 +15,15 @@ const getUrlPaymentVNPAY = async (req, res) => {
     const { methodStatus } = req.body;
     try {
         // Check if the order already confirmed
-        const foundOrder = await Order.findOne({ _id: orderId }).populate(
-            'customer'
-        );
+        const foundOrder = await Order.findById(orderId).populate('customer');
 
         if (!foundOrder) {
             return res
                 .status(401)
                 .json({ sucess: false, message: 'Không tìm thấy đơn hàng!!!' });
         }
+
+        foundOrder.paymentStatus = methodStatus;
 
         const urlString = vnpay.buildPaymentUrl({
             vnp_Amount:
@@ -45,45 +45,42 @@ const getUrlPaymentVNPAY = async (req, res) => {
     }
 };
 
-const vnpayIpn = (req, res) => {
+const vnpayIpn = async (req, res) => {
     try {
         const verify = vnpay.verifyIpnCall({ ...req.query });
         if (!verify.isVerified) {
             return res.json(IpnFailChecksum);
         }
 
-        // Find the order in your database
-        // This is the sample order that you need to check the status, amount, etc.
-        const foundOrder = {
-            orderId: '123456',
-            amount: 10000,
-            status: 'pending',
-        };
+        const orderId = verify.vnp_TxnRef;
+        const paidAmount = Number(verify.vnp_Amount); // đơn vị là VND * 100
 
-        // If the order is not found, or the order id is not matched
-        // You can use the orderId to find the order in your database
-        if (!foundOrder || verify.vnp_TxnRef !== foundOrder.orderId) {
+        // Tìm đơn hàng thật từ DB
+        const foundOrder = await Order.findById(orderId);
+        if (!foundOrder) {
             return res.json(IpnOrderNotFound);
         }
 
-        // If the amount is not matched
-        if (verify.vnp_Amount !== foundOrder.amount) {
+        const expectedAmount =
+            foundOrder.paymentStatus === 'partial'
+                ? Math.ceil(foundOrder.totalPrice / 2) * 100
+                : foundOrder.totalPrice * 100;
+
+        if (paidAmount !== expectedAmount) {
             return res.json(IpnInvalidAmount);
         }
 
-        // If the order is already confirmed
-        if (foundOrder.status === 'completed') {
+        if (foundOrder.paymentStatus === 'paid') {
             return res.json(InpOrderAlreadyConfirmed);
         }
 
-        // Update the order status to completed
-        // Eg: Update the order status in your database
-        foundOrder.status = 'completed';
+        // Cập nhật trạng thái thanh toán
+        foundOrder.paymentStatus = 'paid';
+        await foundOrder.save();
 
-        // Then return the success response to VNPay
         return res.json(IpnSuccess);
     } catch (error) {
-        console.log(`verify error: ${error}`);
+        console.error('IPN error:', error);
         return res.json(IpnUnknownError);
     }
 };

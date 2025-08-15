@@ -120,7 +120,7 @@ function CartModal({ ...props }) {
                             cartStore?.carts?.products?.map((item, index) => (
                                 <div
                                     key={index}
-                                    className="flex border-t border-gray-200 py-6 gap-5 px-3 "
+                                    className="flex border-t border-gray-200 py-6 gap-5 px-3 pb-10"
                                 >
                                     <img
                                         src={

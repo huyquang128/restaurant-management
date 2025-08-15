@@ -59,9 +59,9 @@ function App() {
     useTheme(theme);
 
     // Tránh render layout khi role chưa sẵn sàng
-    if (isAppLoading || (isAuthenticated && (!role || isRefreshingToken))) {
-        return <GlobalLoading />;
-    }
+    // if (isAppLoading || (isAuthenticated && (!role || isRefreshingToken))) {
+    //     return <GlobalLoading />;
+    // }
 
     return (
         <>

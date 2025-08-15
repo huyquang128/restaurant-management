@@ -2,7 +2,7 @@ import star_gray from '@/assets/icon/star_gray.svg';
 import star_yellow from '@/assets/icon/star_yellow.svg';
 import star_yellow_gray from '@/assets/icon/star_yellow_gray.svg';
 
-function renderAverageStar(average) {
+function renderAverageStar(average, type) {
     const number = Math.round(average.toFixed(1) * 2) / 2;
     const stars = [];
     for (let i = 1; i <= 5; i++) {

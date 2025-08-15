@@ -1,7 +1,7 @@
 import banner_1 from '@/assets/image/banner_1.jpg';
 import { logout } from '@/redux/authSlice';
 import { useDispatch, useSelector } from 'react-redux';
-import { useNavigate } from 'react-router';
+import { Link, useNavigate } from 'react-router';
 import ToastMsg from '../common/ToastMsg';
 
 function UserTooltip() {
@@ -38,9 +38,12 @@ function UserTooltip() {
                 <div className="line-clamp-1">{userStore.user?.username}</div>
             </div>
             <div className="border-b ">
-                <div className="py-2 hover:text-yellow-primary transition-colors ease-linear duration-300">
-                    Thông tin cá nhân
-                </div>
+                <Link to={`/user-detail/${userStore.user?.username}`}>
+                    <div className="py-2 hover:text-yellow-primary transition-colors ease-linear duration-300">
+                        Thông tin cá nhân
+                    </div>
+                </Link>
+
                 <div className="pb-2 hover:text-yellow-primary transition-colors ease-linear duration-300">
                     Đơn hàng
                 </div>

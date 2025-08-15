@@ -1,7 +1,6 @@
 import axiosInstancePrivate from '@/api/axiosInstance';
 import userService from '@/api/userService';
 import { createSlice, createAsyncThunk } from '@reduxjs/toolkit';
-import { logout } from '../authSlice';
 
 const initialState = {
     isLoading: false,
@@ -9,10 +8,10 @@ const initialState = {
     user: null,
     users: null,
     formInfoUser: {
+        name: '',
         username: '',
         email: '',
         password: '',
-        name: '',
         phone: '',
         detailed: '',
     },
@@ -26,6 +25,19 @@ export const getUserById = createAsyncThunk(
         try {
             const api = userService(axiosInstancePrivate(getState, dispatch));
             const response = await api.getUserByIdApi(id);
+            return response;
+        } catch (error) {
+            return rejectWithValue(error);
+        }
+    }
+);
+
+export const getUserByUsername = createAsyncThunk(
+    '/user/get-user-by-username',
+    async (username, { rejectWithValue, getState, dispatch }) => {
+        try {
+            const api = userService(axiosInstancePrivate(getState, dispatch));
+            const response = await api.getUserByUsernameApi(username);
             return response;
         } catch (error) {
             return rejectWithValue(error);
@@ -132,6 +144,25 @@ const userSlice = createSlice({
                 state.user = action.payload?.data;
             })
             .addCase(getUserById.rejected, (state) => {
+                state.isLoading = false;
+            })
+
+            .addCase(getUserByUsername.pending, (state) => {
+                state.isLoading = true;
+            })
+            .addCase(getUserByUsername.fulfilled, (state, action) => {
+                state.isLoading = false;
+                state.user = action.payload?.data;
+                state.formInfoUser = {
+                    name: action.payload?.data?.name || '',
+                    username: action.payload?.data?.username || '',
+                    email: action.payload?.data?.email || '',
+                    password: '',
+                    phone: action.payload?.data?.phone || '',
+                    detailed: '',
+                };
+            })
+            .addCase(getUserByUsername.rejected, (state) => {
                 state.isLoading = false;
             })
 

@@ -4,6 +4,13 @@ const userService = (axiosPrivate) => ({
         return response.data;
     },
 
+    getUserByUsernameApi: async (username) => {
+        const response = await axiosPrivate.get(
+            `/user/get-user-by-username/${username}`
+        );
+        return response.data;
+    },
+
     getAllUserRoleApi: async () => {
         const response = await axiosPrivate.get(`/user/get-all-user-role`);
         return response.data;

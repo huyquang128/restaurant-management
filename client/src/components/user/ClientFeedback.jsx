@@ -1,7 +1,8 @@
 import { Swiper, SwiperSlide } from 'swiper/react';
 import 'swiper/css';
 import { Navigation } from 'swiper/modules';
-import banner_1 from '@/assets/image/banner_1.jpg';
+import hinh1 from '@/assets/image/hinh1.jpg';
+import hinh2 from '@/assets/image/hinh2.jpg';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import {
     faChevronLeft,
@@ -142,7 +143,7 @@ function ClientFeedback() {
                                         className="flex gap-3"
                                     >
                                         <img
-                                            src={banner_1}
+                                            src={hinh1}
                                             alt=""
                                             className="h-16 w-16 rounded-lg object-cover"
                                         />
@@ -215,7 +216,7 @@ function ClientFeedback() {
                         className="w-1/2 h-[620px] max-sm:h-[500px] flex items-center"
                     >
                         <img
-                            src={banner_1}
+                            src={hinh1}
                             alt=""
                             className="w-full h-[540px] max-lg:h-[410px] max-md:h-[314px] 
                                         max-sm:h-[400px]  object-cover px-1 -translate-y-16
@@ -233,7 +234,7 @@ function ClientFeedback() {
                         className="w-1/2 h-[620px] max-sm:h-[500px] flex items-center"
                     >
                         <img
-                            src={banner_1}
+                            src={hinh2}
                             alt=""
                             className="w-full h-[540px] max-lg:h-[410px] max-md:h-[314px] max-sm:h-[400px] 
                                     max-xs:h-[300px] object-cover px-1 "

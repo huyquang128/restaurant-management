@@ -87,7 +87,7 @@ function BlockSetQuantityProduct({ ...props }) {
             <input
                 type="number"
                 className="w-2/3 outline-none text-center 
-                            peer bg-bg-secondary"
+                            peer "
                 value={quantityProdValue[productItem.product._id] || 1}
                 onWheel={(e) => e.currentTarget.blur()} // ngăn cuộn chuột thay đổi trong input
                 onChange={(e) => setQuantityProdValue(e.target.value)}

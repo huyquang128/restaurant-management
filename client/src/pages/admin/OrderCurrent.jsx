@@ -103,14 +103,6 @@ function OrderCurrent() {
             <h1 className="mb-5 text-text-primary text-xl font-medium">
                 Đơn hiện thời
             </h1>
-            {/* <div className="w-44 mb-5">
-                <Button
-                    icon={add_white}
-                    title="Tạo đơn đặt bàn"
-                    bg="add"
-                    text_color="white"
-                />
-            </div> */}
 
             {/* list table restaurant */}
             <div className="grid grid-cols-3 text-sm gap-5 max-xl:grid-cols-2 max-sm:grid-cols-1 ">
@@ -167,6 +159,10 @@ function OrderCurrent() {
                                         <span>
                                             {FormatVND(item.totalPrice)}
                                         </span>
+                                        <div>
+                                            - ({'Cọc '}
+                                            {FormatVND(item.totalPrice / 2)})
+                                        </div>
                                     </div>
                                 </div>
                             </div>

@@ -59,7 +59,7 @@ const addOrder = async (req, res) => {
         for (const item of convertObjId) {
             await Product.findByIdAndUpdate(
                 item.product,
-                { $inc: { quantity: -item.quantity, sold: item.quantity } }, // trừ số lượng
+                { $inc: { sold: item.quantity } },
                 { new: true }
             );
         }
@@ -719,158 +719,6 @@ const getRevenue = async (req, res) => {
     }
 };
 
-// const getRevenue = async (req, res) => {
-//     const { day, month, year, type } = req.query;
-
-//     const y = Number(year);
-//     const m = Number(month);
-//     const d = Number(day);
-
-//     if (
-//         (type === 'day' && (!day || !month || !year)) ||
-//         (type === 'month' && (!month || !year)) ||
-//         (type === 'year' && !year)
-//     ) {
-//         return res.status(400).json({
-//             success: false,
-//             message: 'Thiếu tham số ngày / tháng / năm phù hợp với type',
-//         });
-//     }
-
-//     try {
-//         let currentStart, currentEnd, previousStart, previousEnd;
-
-//         if (type === 'day') {
-//             currentStart = new Date(y, m - 1, d);
-//             currentEnd = new Date(currentStart);
-//             currentEnd.setDate(currentEnd.getDate() + 1);
-
-//             previousStart = new Date(currentStart);
-//             previousStart.setDate(previousStart.getDate() - 1);
-//             previousEnd = new Date(currentStart);
-//         } else if (type === 'month') {
-//             currentStart = new Date(y, m - 1, 1);
-//             currentEnd = new Date(y, m, 1);
-
-//             previousStart = new Date(y, m - 2, 1);
-//             previousEnd = new Date(y, m - 1, 1);
-//         } else if (type === 'year') {
-//             currentStart = new Date(y, 0, 1);
-//             currentEnd = new Date(y + 1, 0, 1);
-
-//             previousStart = new Date(y - 1, 0, 1);
-//             previousEnd = new Date(y, 0, 1);
-//         } else {
-//             return res.status(400).json({
-//                 success: false,
-//                 message: 'type phải là "day", "month" hoặc "year"',
-//             });
-//         }
-
-//         const getTotalRevenue = async (start, end) => {
-//             const result = await Order.aggregate([
-//                 {
-//                     $match: {
-//                         updatedAt: { $gte: start, $lt: end },
-//                         paymentStatus: 'paid',
-//                     },
-//                 },
-//                 {
-//                     $group: {
-//                         _id: null,
-//                         total: { $sum: '$totalPrice' },
-//                     },
-//                 },
-//             ]);
-//             return result[0]?.total || 0;
-//         };
-
-//         const getTotalOrders = async (start, end) => {
-//             const result = await Order.aggregate([
-//                 {
-//                     $match: {
-//                         updatedAt: { $gte: start, $lt: end },
-//                     },
-//                 },
-//                 { $count: 'orderCount' },
-//             ]);
-//             return result[0]?.orderCount || 0;
-//         };
-
-//         const getTotalCustomers = async (start, end) => {
-//             const result = await User.aggregate([
-//                 {
-//                     $match: {
-//                         createdAt: { $gte: start, $lt: end },
-//                         role: 'customer', // nếu là ObjectId thì dùng: new mongoose.Types.ObjectId(...)
-//                     },
-//                 },
-//                 { $count: 'customerCount' },
-//             ]);
-//             return result[0]?.customerCount || 0;
-//         };
-
-//         const getTotalDishes = async (start, end) => {
-//             const result = await Product.aggregate([
-//                 {
-//                     $match: {
-//                         createdAt: { $gte: start, $lt: end },
-//                     },
-//                 },
-//                 { $count: 'dishesCount' },
-//             ]);
-//             return result[0]?.dishesCount || 0;
-//         };
-
-//         const [currentRevenue, previousRevenue] = await Promise.all([
-//             getTotalRevenue(currentStart, currentEnd),
-//             getTotalRevenue(previousStart, previousEnd),
-//         ]);
-
-//         const [currentOrders, previousOrders] = await Promise.all([
-//             getTotalOrders(currentStart, currentEnd),
-//             getTotalOrders(previousStart, previousEnd),
-//         ]);
-
-//         const [currentCustomers, previousCustomers] = await Promise.all([
-//             getTotalCustomers(currentStart, currentEnd),
-//             getTotalCustomers(previousStart, previousEnd),
-//         ]);
-
-//         const [currentDishes, previousDishes] = await Promise.all([
-//             getTotalDishes(currentStart, currentEnd),
-//             getTotalDishes(previousStart, previousEnd),
-//         ]);
-
-//         const calculateChange = (current, previous) => {
-//             const diff = current - previous;
-//             const percent =
-//                 previous === 0 ? 100 : ((diff / previous) * 100).toFixed(1);
-//             const trend = diff > 0 ? 'tăng' : diff < 0 ? 'giảm' : 'không đổi';
-//             return { current, previous, diff, percent, trend };
-//         };
-
-//         const revenue = calculateChange(currentRevenue, previousRevenue);
-//         const orders = calculateChange(currentOrders, previousOrders);
-//         const customers = calculateChange(currentCustomers, previousCustomers);
-//         const dishes = calculateChange(currentDishes, previousDishes);
-
-//         return res.status(200).json({
-//             success: true,
-//             data: {
-//                 type,
-//                 revenue,
-//                 orders,
-//                 customers,
-//                 dishes,
-//             },
-//         });
-//     } catch (error) {
-//         console.error('Lỗi getRevenue:', error);
-//         return res.status(500).json({ success: false, message: 'Lỗi server' });
-//     }
-// };
-
 function fillMissingData(type, rawData, { day, month, year }) {
     const filledData = [];
 
@@ -879,6 +727,7 @@ function fillMissingData(type, rawData, { day, month, year }) {
         acc[item._id] = item;
         return acc;
     }, {});
+    console.log('🚀 ~ dataMap ~ dataMap:', dataMap);
 
     if (type === 'day') {
         for (let hour = 0; hour < 24; hour++) {
@@ -909,6 +758,7 @@ function fillMissingData(type, rawData, { day, month, year }) {
                 totalRevenue: existingData ? existingData.totalRevenue : 0,
                 totalProfit: existingData ? existingData.totalProfit : 0,
             });
+            console.log('🚀 ~ fillMissingData ~ filledData:', filledData);
         }
     } else if (type === 'year') {
         for (let m = 1; m <= 12; m++) {
@@ -929,6 +779,7 @@ function fillMissingData(type, rawData, { day, month, year }) {
 
 async function getRevenueProfitReport(req, res) {
     const { day, month, year, type } = req.query;
+
     const pipeline = [];
 
     try {
@@ -993,6 +844,7 @@ async function getRevenueProfitReport(req, res) {
         } else if (type === 'month') {
             const startOfMonth = moment({ year, month: month - 1 })
                 .startOf('month')
+
                 .toDate();
             const endOfMonth = moment({ year, month: month - 1 })
                 .endOf('month')
@@ -1128,14 +980,20 @@ async function getRevenueProfitReport(req, res) {
 
         const filledData = fillMissingData(type, rawData, { day, month, year });
 
+        console.log('🚀 ~ getRevenueProfitReport ~ filledData:', filledData);
         const totalRevenue = filledData.reduce(
             (acc, item) => acc + item.totalRevenue,
             0
+        );
+        console.log(
+            '🚀 ~ getRevenueProfitReport ~ totalRevenue:',
+            totalRevenue
         );
         const totalProfit = filledData.reduce(
             (acc, item) => acc + item.totalProfit,
             0
         );
+        console.log('🚀 ~ getRevenueProfitReport ~ totalProfit:', totalProfit);
 
         return res.status(200).json({
             success: true,
@@ -1148,290 +1006,6 @@ async function getRevenueProfitReport(req, res) {
             .json({ success: false, message: 'Server error' });
     }
 }
-
-// function fillMissingData(type, rawData, { day, month, year }) {
-//     const filledData = [];
-//     const dataMap = rawData.reduce((acc, item) => {
-//         acc[item._id] = item;
-//         return acc;
-//     }, {});
-
-//     if (type === 'day') {
-//         for (let hour = 0; hour < 24; hour++) {
-//             const existingData = dataMap[hour] || {};
-//             const adjustedHour = (hour + 7) % 24;
-
-//             filledData.push({
-//                 _id: hour,
-//                 name: `${adjustedHour}h`,
-//                 totalRevenue: existingData.totalRevenue || 0,
-//                 totalProfit: existingData.totalProfit || 0,
-//             });
-//         }
-//     } else if (type === 'month') {
-//         const startOfMonth = moment(`${year}-${month}-01`);
-//         const totalDaysInMonth = startOfMonth.daysInMonth();
-
-//         const startWeek = startOfMonth.isoWeek();
-//         const totalWeeks = Math.ceil(totalDaysInMonth / 7);
-
-//         for (let i = 0; i < totalWeeks; i++) {
-//             const week = startWeek + i;
-//             const weekId = `${week}-${year}`;
-//             const existingData = dataMap[weekId] || {};
-//             console.log('🚀 ~ fillMissingData ~ weekId:', weekId);
-
-//             filledData.push({
-//                 _id: weekId,
-//                 name: `Tuần ${i + 1}`,
-//                 totalRevenue: existingData.totalRevenue || 0,
-//                 totalProfit: existingData.totalProfit || 0,
-//             });
-//         }
-//     } else if (type === 'year') {
-//         for (let m = 1; m <= 12; m++) {
-//             const monthStr = `${year}-${m.toString().padStart(2, '0')}`;
-//             const existingData = dataMap[monthStr] || {};
-
-//             filledData.push({
-//                 _id: monthStr,
-//                 name: `Tháng ${m}`,
-//                 totalRevenue: existingData.totalRevenue || 0,
-//                 totalProfit: existingData.totalProfit || 0,
-//             });
-//         }
-//     }
-
-//     return filledData;
-// }
-
-// async function getRevenueProfitReport(req, res) {
-//     const { day, month, year, type } = req.query;
-//     const pipeline = [];
-
-//     try {
-//         // Các mốc thời gian theo type
-//         if (type === 'day') {
-//             const start = moment({ year, month: month - 1, day })
-//                 .startOf('day')
-//                 .toDate();
-//             console.log('🚀 ~ getRevenueProfitReport ~ start:', start);
-
-//             const end = moment({ year, month: month - 1, day })
-//                 .endOf('day')
-//                 .toDate();
-//             console.log('🚀 ~ getRevenueProfitReport ~ end:', end);
-
-//             pipeline.push({
-//                 $match: {
-//                     updatedAt: { $gte: start, $lte: end },
-//                     paymentStatus: 'paid',
-//                 },
-//             });
-//             pipeline.push({ $unwind: '$dishes' });
-
-//             pipeline.push({
-//                 $lookup: {
-//                     from: 'products',
-//                     localField: 'dishes.product',
-//                     foreignField: '_id',
-//                     as: 'productInfo',
-//                 },
-//             });
-//             pipeline.push({ $unwind: '$productInfo' });
-
-//             pipeline.push({
-//                 $project: {
-//                     hour: { $hour: '$updatedAt' },
-//                     revenue: {
-//                         $multiply: ['$dishes.price', '$dishes.quantity'],
-//                     },
-//                     profit: {
-//                         $multiply: [
-//                             {
-//                                 $subtract: [
-//                                     '$dishes.price',
-//                                     '$productInfo.cost',
-//                                 ],
-//                             },
-//                             '$dishes.quantity',
-//                         ],
-//                     },
-//                 },
-//             });
-
-//             pipeline.push({
-//                 $group: {
-//                     _id: '$hour',
-//                     totalRevenue: { $sum: '$revenue' },
-//                     totalProfit: { $sum: '$profit' },
-//                 },
-//             });
-//             console.log("🚀 ~ getRevenueProfitReport ~ pipeline:", pipeline)
-//         } else if (type === 'month') {
-//             const start = moment({ year, month: month - 1 })
-//                 .startOf('month')
-//                 .toDate();
-//             const end = moment({ year, month: month - 1 })
-//                 .endOf('month')
-//                 .toDate();
-
-//             pipeline.push({
-//                 $match: {
-//                     updatedAt: { $gte: start, $lte: end },
-//                     paymentStatus: 'paid',
-//                 },
-//             });
-//             pipeline.push({ $unwind: '$dishes' });
-
-//             pipeline.push({
-//                 $lookup: {
-//                     from: 'products',
-//                     localField: 'dishes.product',
-//                     foreignField: '_id',
-//                     as: 'productInfo',
-//                 },
-//             });
-//             pipeline.push({ $unwind: '$productInfo' });
-
-//             pipeline.push({
-//                 $project: {
-//                     week: { $isoWeek: '$updatedAt' },
-//                     year: { $year: '$updatedAt' },
-//                     revenue: {
-//                         $multiply: ['$dishes.price', '$dishes.quantity'],
-//                     },
-//                     profit: {
-//                         $multiply: [
-//                             {
-//                                 $subtract: [
-//                                     '$dishes.price',
-//                                     '$productInfo.cost',
-//                                 ],
-//                             },
-//                             '$dishes.quantity',
-//                         ],
-//                     },
-//                 },
-//             });
-
-//             pipeline.push({
-//                 $project: {
-//                     weekId: {
-//                         $concat: [
-//                             { $toString: '$week' },
-//                             '-',
-//                             { $toString: '$year' },
-//                         ],
-//                     },
-//                     revenue: 1,
-//                     profit: 1,
-//                 },
-//             });
-
-//             pipeline.push({
-//                 $group: {
-//                     _id: '$weekId',
-//                     totalRevenue: { $sum: '$revenue' },
-//                     totalProfit: { $sum: '$profit' },
-//                 },
-//             });
-//         } else if (type === 'year') {
-//             const start = moment({ year }).startOf('year').toDate();
-//             const end = moment({ year }).endOf('year').toDate();
-
-//             pipeline.push({
-//                 $match: {
-//                     updatedAt: { $gte: start, $lte: end },
-//                     paymentStatus: 'paid',
-//                 },
-//             });
-//             pipeline.push({ $unwind: '$dishes' });
-
-//             pipeline.push({
-//                 $lookup: {
-//                     from: 'products',
-//                     localField: 'dishes.product',
-//                     foreignField: '_id',
-//                     as: 'productInfo',
-//                 },
-//             });
-//             pipeline.push({ $unwind: '$productInfo' });
-
-//             pipeline.push({
-//                 $project: {
-//                     month: { $month: '$updatedAt' },
-//                     year: { $year: '$updatedAt' },
-//                     revenue: {
-//                         $multiply: ['$dishes.price', '$dishes.quantity'],
-//                     },
-//                     profit: {
-//                         $multiply: [
-//                             {
-//                                 $subtract: [
-//                                     '$dishes.price',
-//                                     '$productInfo.cost',
-//                                 ],
-//                             },
-//                             '$dishes.quantity',
-//                         ],
-//                     },
-//                 },
-//             });
-
-//             pipeline.push({
-//                 $project: {
-//                     monthId: {
-//                         $concat: [
-//                             { $toString: '$year' },
-//                             '-',
-//                             {
-//                                 $cond: [
-//                                     { $lt: ['$month', 10] },
-//                                     { $concat: ['0', { $toString: '$month' }] },
-//                                     { $toString: '$month' },
-//                                 ],
-//                             },
-//                         ],
-//                     },
-//                     revenue: 1,
-//                     profit: 1,
-//                 },
-//             });
-
-//             pipeline.push({
-//                 $group: {
-//                     _id: '$monthId',
-//                     totalRevenue: { $sum: '$revenue' },
-//                     totalProfit: { $sum: '$profit' },
-//                 },
-//             });
-//         }
-
-//         pipeline.push({ $sort: { _id: 1 } });
-
-//         const rawData = await Order.aggregate(pipeline);
-//         const filledData = fillMissingData(type, rawData, { day, month, year });
-
-//         console.log("🚀 ~ getRevenueProfitReport ~ filledData:", filledData)
-//         const totalRevenue = filledData.reduce(
-//             (acc, item) => acc + item.totalRevenue,
-//             0
-//         );
-//         const totalProfit = filledData.reduce(
-//             (acc, item) => acc + item.totalProfit,
-//             0
-//         );
-
-//         return res.status(200).json({
-//             success: true,
-//             data: { totalRevenue, totalProfit, filledData },
-//         });
-//     } catch (error) {
-//         console.error('Lỗi truy vấn báo cáo doanh thu/lợi nhuận:', error);
-//         return res.status(500).json({ success: false, message: 'Lỗi server' });
-//     }
-// }
 
 module.exports = {
     addOrder,

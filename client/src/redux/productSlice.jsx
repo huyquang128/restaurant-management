@@ -15,6 +15,7 @@ const initialState = {
     isLoadingSearch: false,
     error: null,
     products: null,
+    allProduct: null,
     productSold: null,
     formProductValue: {
         nameProduct: '',
@@ -40,60 +41,60 @@ const initialState = {
 
 export const getAllProductPages = createAsyncThunk(
     '/product/get-all-products-pages',
-    async (pageNumber) => {
+    async (pageNumber, { rejectWithValue }) => {
         try {
             const response = await getAllProductsPageApi(pageNumber);
             return response;
         } catch (error) {
-            console.error(error);
+            return rejectWithValue(error.response?.data.message);
         }
     }
 );
 
 export const getAllProducts = createAsyncThunk(
     '/product/get-all-products',
-    async () => {
+    async (_, { rejectWithValue }) => {
         try {
             const response = await getAllProductsApi();
             return response;
         } catch (error) {
-            console.error(error);
+            return rejectWithValue(error.response?.data.message);
         }
     }
 );
 
 export const getProductSold = createAsyncThunk(
     '/product/get-product-sold',
-    async () => {
+    async (_, { rejectWithValue }) => {
         try {
             const response = await getProductSoldApi();
             return response;
         } catch (error) {
-            console.error(error);
+            return rejectWithValue(error.response?.data.message);
         }
     }
 );
 
 export const getProductsPageByCategory = createAsyncThunk(
     '/product/get-products-page-by-category',
-    async ({ id, pageNumber }) => {
+    async ({ id, pageNumber }, { rejectWithValue }) => {
         try {
             const response = await getProductsPageByCategoryApi(id, pageNumber);
             return response;
         } catch (error) {
-            console.error(error);
+            return rejectWithValue(error.response?.data.message);
         }
     }
 );
 
 export const getProductBySlug = createAsyncThunk(
     '/product/get-product-by-slug',
-    async (slug) => {
+    async (slug, { rejectWithValue }) => {
         try {
             const response = await getProductBySlugApi(slug);
             return response;
         } catch (error) {
-            console.error(error);
+            return rejectWithValue(error.response?.data.message);
         }
     }
 );
@@ -108,7 +109,7 @@ export const addProduct = createAsyncThunk(
             const response = await api.addProductApi(formData);
             return response;
         } catch (error) {
-            return rejectWithValue(error.response.data.message);
+            return rejectWithValue(error.response?.data.message);
         }
     }
 );
@@ -123,7 +124,7 @@ export const updateProduct = createAsyncThunk(
             const response = await api.updateProductApi({ formData, id });
             return response;
         } catch (error) {
-            return rejectWithValue(error.response.data.message);
+            return rejectWithValue(error.response?.data.message);
         }
     }
 );
@@ -138,14 +139,14 @@ export const deleteProduct = createAsyncThunk(
             const response = await api.deleteProductApi(id, categoryId);
             return response;
         } catch (error) {
-            return rejectWithValue(error.response.data.message);
+            return rejectWithValue(error.response?.data.message);
         }
-    }
+    }   
 );
 
 export const searchProductName = createAsyncThunk(
     '/product/search-product-name',
-    async ({ page, q }) => {
+    async ({ page, q }, { rejectWithValue }) => {
         try {
             const response = await searchNameProductApi({
                 page,
@@ -153,19 +154,19 @@ export const searchProductName = createAsyncThunk(
             });
             return response;
         } catch (error) {
-            console.error(error);
+            return rejectWithValue(error.response?.data.message);
         }
     }
 );
 
 export const searchProductNameNoPage = createAsyncThunk(
     '/product/search-product-name-no-pages',
-    async (q) => {
+    async (q, { rejectWithValue }) => {
         try {
             const response = await searchNameProductNoPageApi(q);
             return response;
         } catch (error) {
-            console.error(error);
+            return rejectWithValue(error.response?.data.message);
         }
     }
 );
@@ -221,16 +222,6 @@ const productSlice = createSlice({
                 );
         },
 
-        //
-        // setProductSelectedInCombo: (state, action) => {
-        //     state.productSelectedInComboAdd = action.payload;
-        // },
-        // deleteProductSelectedInCombo: (state, action) => {
-        //     state.productSelectedInComboAdd =
-        //         state.productSelectedInComboAdd.filter(
-        //             (item) => item._id !== action.payload
-        //         );
-        // },
         setValueSortDishes: (state, action) => {
             state.valueSortDishes = action.payload;
         },

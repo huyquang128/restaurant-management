@@ -25,7 +25,7 @@ export const getProductsPageByCategoryApi = async (id, pageNumber) => {
             params: {
                 page: pageNumber,
             },
-        }
+        } 
     );
     return response.data;
 };

@@ -48,10 +48,14 @@ function Banner() {
             >
                 {slideStore.slide?.map((item, index) => (
                     <SwiperSlide key={index}>
-                        <AnimatePresence mode="await">
-                            <div className="text-center">
+                        <div className="text-center">
+                            <AnimatePresence>
                                 <motion.div
+                                    key={index}
                                     exit={{ y: 100 }}
+                                    transition={{
+                                        duration: 0.3,
+                                    }}
                                     className="font-great text-yellow-primary text-5xl
                                              max-sm:text-4xl max-xs:text-3xl  
                                                py-2 flex justify-center gap-1 
@@ -62,7 +66,6 @@ function Banner() {
                                             currentImgIndex === index && (
                                                 <motion.div
                                                     key={`${index}-${indexChar}-${char}`}
-                                                    // key={index}
                                                     className=""
                                                     initial={{
                                                         opacity: 0,
@@ -71,10 +74,6 @@ function Banner() {
                                                     animate={{
                                                         opacity: 1,
                                                         y: 0,
-                                                    }}
-                                                    exit={{
-                                                        opacity: 0,
-                                                        y: -100,
                                                     }}
                                                     transition={{
                                                         delay: indexChar * 0.05,
@@ -86,6 +85,9 @@ function Banner() {
                                             )
                                     )}
                                 </motion.div>
+                            </AnimatePresence>
+
+                            <AnimatePresence mode="await">
                                 <div
                                     className="font-oswald text-5xl text-white mb-10 whitespace-nowrap
                                                  max-sm:text-4xl max-xs:text-[26px]"
@@ -110,23 +112,27 @@ function Banner() {
                                             )
                                     )}
                                 </div>
+                            </AnimatePresence>
 
-                                {currentImgIndex === index && (
-                                    <motion.button
-                                        key={index}
-                                        initial={{ opacity: 0, y: 50 }}
-                                        animate={{ opacity: 1, y: 0 }}
-                                        exit={{ opacity: 0, y: 50 }}
-                                        transition={{ duration: 2 }}
-                                        className="border-2 text-sm w-40 h-12 text-white font-cabin
+                            <AnimatePresence mode="await">
+                                <div>
+                                    {currentImgIndex === index && (
+                                        <motion.button
+                                            key={index}
+                                            initial={{ opacity: 0, y: -70 }}
+                                            animate={{ opacity: 1, y: 0 }}
+                                            exit={{ opacity: 0, y: 70 }}
+                                            transition={{ duration: 1.2 }}
+                                            className="border-2 text-sm w-40 h-12 text-white font-cabin
                                             hover:bg-yellow-primary hover:border-yellow-primary
                                             transition-colors ease-linear max-sm:w-32 max-sm:h-10"
-                                    >
-                                        ĐẶT BÀN
-                                    </motion.button>
-                                )}
-                            </div>
-                        </AnimatePresence>
+                                        >
+                                            ĐẶT BÀN
+                                        </motion.button>
+                                    )}
+                                </div>
+                            </AnimatePresence>
+                        </div>
                     </SwiperSlide>
                 ))}
             </Swiper>

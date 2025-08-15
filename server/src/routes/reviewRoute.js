@@ -11,6 +11,6 @@ const { upload } = require('../Helper/cloudinary');
 router.get('/get-all-review', findAllOrder);
 router.post('/add-review', upload.none(), addReview);
 router.patch('/update-review/:id', upload.none(), updateReview);
-router.patch('/response-review/:id', respondToReview);
+router.patch('/response-review/:id', upload.none(), respondToReview);
 
 module.exports = router;

@@ -4,7 +4,7 @@ import hide_pass from '@/assets/icon/hide_pass.svg';
 import show_pass from '@/assets/icon/show_pass.svg';
 import { useState } from 'react';
 
-function InputCommon({ label, type, no_label, isRequired = false, ...props }) {
+function InputCommon({ label, type, no_label,client, isRequired = false, ...props }) {
     const { formik, id } = props;
     const [showPass, setShowPass] = useState(false);
     const isErr = formik.touched[id] && formik.errors[id];
@@ -25,6 +25,7 @@ function InputCommon({ label, type, no_label, isRequired = false, ...props }) {
                     className={`w-full px-4 py-3 bg-bg-secondary outline-1 outline focus:outline-yellow-primary
                         text-text-primary rounded-lg ease-linear duration-200 
                      relative
+                     ${client && 'outline-gray-300'}
                         ${isErr ? 'outline-red-500' : 'outline-transparent'}`}
                     {...props}
                     onBlur={formik.handleBlur}

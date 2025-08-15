@@ -2,7 +2,6 @@
 import { useDispatch, useSelector } from 'react-redux';
 import Pagination from 'rc-pagination';
 import { useEffect } from 'react';
-import arr_left_white from '@/assets/icon/arr_left_white.svg';
 import angles_right_black from '@/assets/icon/angles_right_black.svg';
 import angles_right_white from '@/assets/icon/angles_right_white.svg';
 import angles_left_black from '@/assets/icon/angles_left_black.svg';
@@ -21,6 +20,7 @@ function PaginationCommon({ ...props }) {
         type,
         id,
         idChange,
+        client
     } = props;
 
     const dispatch = useDispatch();
@@ -47,8 +47,10 @@ function PaginationCommon({ ...props }) {
 
     return (
         <div
-            className="flex items-center justify-center mb-10 
-                          bg-bg-secondary rounded-lg overflow-hidden"
+            className={`flex items-center justify-center mb-10 
+                          bg-bg-secondary rounded-lg overflow-hidden ${
+                              client && 'border border-gray-200'
+                          }`}
         >
             <Pagination
                 current={currentPage} // Trang hiện tại

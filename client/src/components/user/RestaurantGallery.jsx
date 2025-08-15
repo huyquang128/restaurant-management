@@ -1,12 +1,15 @@
-import banner_1 from '@/assets/image/banner_1.jpg';
+import nhahang1 from '@/assets/image/nhahang1.jpg';
+import nhahang3 from '@/assets/image/nhahang3.jpeg';
+import nhahang2 from '@/assets/image/nhahang2.jpg';
+import nhahang4 from '@/assets/image/nhahang4.jpg';
 import { useInView } from 'react-intersection-observer';
 import { motion } from 'framer-motion';
 
 const GalleryImg = [
-    { src: banner_1 },
-    { src: banner_1 },
-    { src: banner_1 },
-    { src: banner_1 },
+    { src: nhahang1 },
+    { src: nhahang3 },
+    { src: nhahang2 },
+    { src: nhahang4 },
 ];
 function RestaurantGallery() {
     const { ref, inView } = useInView({

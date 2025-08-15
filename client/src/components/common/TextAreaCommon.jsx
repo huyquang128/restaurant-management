@@ -1,5 +1,5 @@
 /* eslint-disable react/prop-types */
-function TextAreaCommon({ label, no_label,bg,  ...props }) {
+function TextAreaCommon({ label, no_label, client, bg, ...props }) {
     const { formik, id } = props;
     const isErr = formik.touched[id] && formik.errors[id];
     const errMsg = formik.errors[id];
@@ -10,6 +10,7 @@ function TextAreaCommon({ label, no_label,bg,  ...props }) {
                 className={`w-full px-4 py-2 bg-bg-secondary outline-1 outline focus:outline-yellow-primary
                         text-text-primary rounded-lg ease-linear duration-200 
                      relative h-16
+                     ${client && 'outline-gray-300'}
                         ${isErr ? 'outline-red-500' : 'outline-transparent'}`}
                 {...props}
                 onBlur={formik.handleBlur}

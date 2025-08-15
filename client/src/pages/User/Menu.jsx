@@ -4,26 +4,19 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import arr_down_black from '@/assets/icon/arr_down_black.svg';
 import add_white from '@/assets/icon/add_white.svg';
-import star_yellow from '@/assets/icon/star_yellow.svg';
 import { useDispatch, useSelector } from 'react-redux';
-import {
-    getAllCategoriesDishes,
-    getAllCategoriesDishesPages,
-} from '@/redux/categoryDishesSlice';
+import { getAllCategoriesDishes } from '@/redux/categoryDishesSlice';
 import CapitalizeFirstLetter from '@/components/common/CapitalizeFirstLetter';
 import FormatVND from '@/components/common/FormatVND';
 import Button from '@/components/common/Button/Button';
 import TooltipCommon from '@/components/common/TooltipCommon';
-import PaginationCommon from '@/components/common/Pagination/PaginationCommon';
-import {
-    getProductBySlug,
-    getProductsPageByCategory,
-} from '@/redux/productSlice';
+import { getProductBySlug } from '@/redux/productSlice';
 import RotatingLinesCommon from '@/components/common/spinnerAnimation/RotatingLinesCommon';
 import SortDishesTooltip from '@/components/tooltipsContent/SortDishesTooltip';
 import { useUnderlinePosition } from '@/components/hooks/useUnderlinePosition';
 import UnderLineCategoryCommon from '@/components/common/UnderLineCategoryCommon';
 import { showModal } from '@/redux/modalSlice';
+import renderAverageStar2 from '@/components/common/renderAverageStar2';
 
 const valueSort = [
     { title: 'Giá: Tăng dần', value: 'asc' },
@@ -114,6 +107,15 @@ function Menu() {
         }, 300);
     };
 
+    const handleAverageRating = (item) => {
+        const totalReviews = item.reviews.length;
+        const totalRating = item.reviews.reduce((acc, item) => {
+            return acc + item.rating;
+        }, 0);
+
+        return totalReviews > 0 ? totalRating / totalReviews : 0;
+    };
+
     return (
         <>
             <div className=" mt-28 ">
@@ -173,11 +175,10 @@ function Menu() {
                         <div className="flex justify-between items-center mb-5 ">
                             <div className="text-gray-primary max-md:hidden">
                                 Hiển thị{' '}
-                                {
+                                {categoryDishesStore?.category_dishes &&
                                     categoryDishesStore?.category_dishes[
                                         activeCategory
-                                    ]?.products.length
-                                }{' '}
+                                    ]?.products.length}{' '}
                                 mặt hàng
                             </div>
                             <div
@@ -314,31 +315,11 @@ function Menu() {
                                                         )}
                                                     </span>
                                                     <div className="flex gap-1">
-                                                        <img
-                                                            src={star_yellow}
-                                                            alt="star"
-                                                            className="h-3"
-                                                        />{' '}
-                                                        <img
-                                                            src={star_yellow}
-                                                            alt="star"
-                                                            className="h-3"
-                                                        />{' '}
-                                                        <img
-                                                            src={star_yellow}
-                                                            alt="star"
-                                                            className="h-3"
-                                                        />{' '}
-                                                        <img
-                                                            src={star_yellow}
-                                                            alt="star"
-                                                            className="h-3"
-                                                        />{' '}
-                                                        <img
-                                                            src={star_yellow}
-                                                            alt="star"
-                                                            className="h-3"
-                                                        />
+                                                        {renderAverageStar2(
+                                                            handleAverageRating(
+                                                                item
+                                                            )
+                                                        )}
                                                     </div>
                                                 </h3>
                                                 <p className="line-clamp-2 font-cabin  text-text-gray px-4 opacity-70">

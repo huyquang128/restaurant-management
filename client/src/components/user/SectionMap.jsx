@@ -1,5 +1,6 @@
 import { useInView } from 'react-intersection-observer';
 import { motion } from 'framer-motion';
+import ToastMsg from '../common/ToastMsg';
 
 function SectionMap() {
     const { ref, inView } = useInView({
@@ -9,8 +10,10 @@ function SectionMap() {
 
     return (
         <div ref={ref} className="bg-white w-full pt-20 ">
-            <div className="w-xl max-lg:w-lg max-md:w-md max-sm:w-sm max-xs:w-xs mx-auto
-            max-xs:px-3">
+            <div
+                className="w-xl max-lg:w-lg max-md:w-md max-sm:w-sm max-xs:w-xs mx-auto
+            max-xs:px-3"
+            >
                 <motion.div
                     initial={{ opacity: 0, y: '-100%' }}
                     animate={
@@ -38,7 +41,7 @@ function SectionMap() {
                         <p className=" mb-4 text-gray-primary">
                             Chúng tôi mong nhận được phản hồi từ khách hàng, du
                             khách và những người đến từ SAVOR. Chúng tôi thực sự
-                            đánh giá cao     việc bạn dành thời gian để liên lạc.
+                            đánh giá cao việc bạn dành thời gian để liên lạc.
                             Vui lòng điền vào mẫu dưới đây.
                         </p>
                         <div className="mb-2">
@@ -88,7 +91,10 @@ function SectionMap() {
                             className="col-span-4 border h-40 p-3"
                             placeholder="Nội dung"
                         ></textarea>
-                        <button className="bg-black text-white font-cabin col-span-4 py-4">
+                        <button
+                            onClick={() => ToastMsg({ msg: 'Đã gửi tin nhắn' })}
+                            className="bg-black text-white font-cabin col-span-4 py-4"
+                        >
                             Gửi tin nhắn
                         </button>
                     </motion.div>

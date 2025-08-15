@@ -97,6 +97,12 @@ const updateReview = async (req, res) => {
 const respondToReview = async (req, res) => {
     const { id } = req.params;
     const { responder, content, emoji } = req.body;
+    console.log(
+        '🚀 ~ respondToReview ~ responder, content, emoji:',
+        responder,
+        content,
+        emoji
+    );
 
     try {
         const review = await Review.findById(id);

@@ -26,7 +26,6 @@ function AddSpecialOffer() {
 
     const [editorValue, setEditorValue] = useState(initialValue);
     const [editorKey, setEditorKey] = useState(0);
-    console.log('🚀 ~ AddSpecialOffer ~ editorValue:', editorValue);
 
     useEffect(() => {
         dispatch(getPostSlug(slug)).then((data) => {

@@ -33,7 +33,7 @@ function PaymentOrderModal({ ...props }) {
     useOutsideClickModal(modalRef, closeModal);
 
     useEffect(() => {
-        const moneyChange = Number(valueCashReceived) - item.totalPrice;
+        const moneyChange = Number(valueCashReceived) - item.totalPrice / 2;
         setValueChange(moneyChange);
     }, [valueCashReceived]);
 
@@ -142,7 +142,7 @@ function PaymentOrderModal({ ...props }) {
                             className="font-semibold text-lg bg-color-active placeholder:text-text-primary 
                                     text-center flex-1 "
                             placeholder="000"
-                            value={FormatVND(item.deposit)}
+                            value={FormatVND(item.totalPrice / 2)}
                             disabled
                         />
                     </div>
