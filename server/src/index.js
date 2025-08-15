@@ -1,4 +1,4 @@
- const express = require('express');
+const express = require('express');
 const connectDB = require('./Config/db');
 const cookieParser = require('cookie-parser');
 const cors = require('cors');
@@ -35,8 +35,8 @@ app.use(cookieParser());
 
 app.use(
     cors({
-        // origin: 'https://restaurant-management-lac-nu.vercel.app',
-        origin: 'http://localhost:5173',
+        origin: 'restaurant-management-pvzf.vercel.app',
+        // origin: 'http://localhost:5173',
         credentials: true,
     })
 );
